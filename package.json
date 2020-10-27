@@ -1,0 +1,17 @@
+{
+  "name": "solid-node-client",
+  "version": "1.0.0",
+  "description": "a client for nodejs access to Solid",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "node tests/all"
+  },
+  "keywords": [],
+  "author": "Jeff Zucker",
+  "license": "MIT",
+  "dependencies": {
+    "solid-auth-fetcher": "^1.1.0",
+    "solid-rest": "^1.2.2"
+  },
+  "devDependencies": {}
+}
