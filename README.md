@@ -1,8 +1,8 @@
 # Solid-Node-Client                                                            
                                                                                
--- **a client for nodejs access to Solid** --    
+-- **a nodejs client for Solid** --    
 
-This library uses [solid-auth-fetcher]() to provide session management and fetching for https: URLs and uses [solid-rest]() to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
+This library uses [solid-auth-fetcher]() to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
                                                                                
 ## Synopsis   
 **Stand alone usage :**
@@ -41,8 +41,10 @@ async function main(){
   npm install 
 ```
 
-**2. give the app permission**                                                                            
-Skip this step if you don't need authenticated access to a pod.  To get authenticated access to a pod, you will need to add "https://solid-node-client" as a trusted app on that pod or the portion of it you want to access. See [how to make an app trusted]() for how to do this.                       
+**2. give the app permission**                                                 
+
+                           
+Skip this step if you don't need authenticated access to a pod.  To get authenticated access to a pod, you will need to add "https://solid-node-client" as a trusted app on that pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this.                       
     
 ## Methods
 
@@ -74,7 +76,7 @@ Logs the user out.  This means that authenticated fetches are no longer possible
 
 ### fetch()
 
-This method performs CRUD operations as specified in the [Solid REST spec]().  When used with file: URLs, most of the REST spec is followed and, as with http: URLs, the return value is a Response object containing fields such status and statusText and methods such as text(), json(), and headers.get().  See the [solid-rest docs]() for details of how file: URLs are handled.
+This method performs CRUD operations as specified in the [Solid REST spec](https://github.com/solid/solid-spec).  When used with file: URLs, most of the REST spec is followed and, as with http: URLs, the return value is a Response object containing fields such status and statusText and methods such as text(), json(), and headers.get().  See the [solid-rest docs](https://github.com/solid/solid-rest) for details of how file: URLs are handled.
 
 Here's an example :
 ```javascript
@@ -93,15 +95,15 @@ console.log( await response.text()  );
 
 ### currentSession() 
 
-Returns the current solid-auth-fetcher Session object if the user is logged in or null otherwise.  See the [solid-auth-fetcher documentation]() for how to use this object.
+Returns the current solid-auth-fetcher Session object if the user is logged in or null otherwise.  See the [solid-auth-fetcher documentation](https://github.com/solid/solid-auth-fetcher) for how to use this object.
 
 ### currentAuthFetcher()
 
-Returns the current solid-auth-fetcher authFetcher object if the user is logged in or null otherwise.  See the [solid-auth-fetcher documentation]() on how to use this object.
+Returns the current solid-auth-fetcher authFetcher object if the user is logged in or null otherwise.  See the [solid-auth-fetcher documentation](https://github.com/solid/solid-auth-fetcher) on how to use this object.
 
 ### setRestHandlers( handlers )
 
-Solid-Rest has a plugin system which allows plugins for almost any storage backend.  By default, it handles file: URLs.  To specify other storage spaces, you can use this method to define a new SolidRest object that includes a plugin for that storage space. See [solid-rest docs]() for details.
+Solid-Rest has a plugin system which allows plugins for almost any storage backend.  By default, it handles file: URLs.  To specify other storage spaces, you can use this method to define a new SolidRest object that includes a plugin for that storage space. See [solid-rest docs](https://github.com/solid/solid-rest) for details.
 
 ## Acknowledgements
 
