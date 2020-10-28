@@ -37,8 +37,6 @@ async function main(){
   download or clone this repo
   cd to install-folder                                                        
   npm install                
-  cd to install-folder/node_modules/solid-auth-fetcher
-  npm install 
 ```
 
 **2. give the app permission**                                                 
