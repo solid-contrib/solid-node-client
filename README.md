@@ -2,7 +2,7 @@
                                                                                
 -- **a nodejs client for Solid** --    
 
-This library uses [solid-auth-fetcher]() to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
+This library uses [solid-auth-fetcher](https://github.com/solid/solid-auth-fetcher) to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
                                                                                
 ## Synopsis   
 **Stand alone usage :**
