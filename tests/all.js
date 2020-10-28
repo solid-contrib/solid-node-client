@@ -7,7 +7,7 @@ let allfails = 0
 async function main(){
   await run("app:")
   await run("file:")
-  await run("https:")
+//  await run("https:")
   if(allfails>0){
     process.exit(1)
   }
