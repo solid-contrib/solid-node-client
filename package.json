@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "ajv": "^6.12.6",
-    "solid-auth-fetcher": "^1.1.0",
+    "solid-auth-fetcher": "^1.2.1",
     "solid-rest": "^1.2.2"
   },
   "devDependencies": {

@@ -60,15 +60,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 exports.setRestHandlers = exports.currentAuthFetcher = exports.currentSession = exports.logout = exports.login = exports.fetch = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
-var obtain_auth_headers_1 = require("./obtain-auth-headers");
 var node_fetch_1 = __importDefault(require("node-fetch"));
 var SolidRest = __importStar(require("solid-rest"));
 var rest = new SolidRest();
 var DEBUG = false;
 var authFetcher;
 var globalSession;
-/** PUBLIC METHODS
- */
 function fetch(url, options) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -157,15 +154,18 @@ function _getAuthSession(options) {
 }
 function _getAuthFetcher(options, callback) {
     return __awaiter(this, void 0, void 0, function () {
-        var session;
+        var cookie, authFetcher, session;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, obtain_auth_headers_1.getAuthFetcher(options)];
+                case 0: return [4 /*yield*/, solid_auth_fetcher_1.getNodeSolidServerCookie(options.idp, options.username, options.password)];
                 case 1:
+                    cookie = _a.sent();
+                    return [4 /*yield*/, solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, "https://solid-node-client")];
+                case 2:
                     authFetcher = _a.sent();
                     return [4 /*yield*/, solid_auth_fetcher_1.getSession()];
-                case 2:
+                case 3:
                     session = _a.sent();
                     authFetcher.onSession(function (s) { return __awaiter(_this, void 0, void 0, function () {
                         var originalFetch;
