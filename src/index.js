@@ -35,13 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.setRestHandlers = exports.currentAuthFetcher = exports.currentSession = exports.logout = exports.login = exports.fetch = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var obtain_auth_headers_1 = require("./obtain-auth-headers");
-var node_fetch_1 = require("node-fetch");
-var SolidRest = require("solid-rest");
-var rest = new SolidRest();
+var node_fetch_1 = __importDefault(require("node-fetch"));
+var solid_rest_1 = __importDefault(require("solid-rest"));
+var rest = new solid_rest_1["default"]();
 var DEBUG = false;
 var authFetcher;
 var globalSession;
@@ -109,7 +112,7 @@ function currentAuthFetcher() {
 exports.currentAuthFetcher = currentAuthFetcher;
 function setRestHandlers(handlers) {
     if (typeof handlers != "undefined") {
-        rest = new SolidRest(handlers);
+        rest = new solid_rest_1["default"](handlers);
     }
 }
 exports.setRestHandlers = setRestHandlers;
