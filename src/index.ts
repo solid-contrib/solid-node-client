@@ -1,4 +1,5 @@
-import { getSession, getNodeSolidServerCookie, getAuthFetcher } from "solid-auth-fetcher";
+import {getSession } from "solid-auth-fetcher";
+import {getAuthFetcher,IloginOptions} from "./obtain-auth-headers";
 import fetch from "node-fetch";
 import SolidRest from "solid-rest";
 
@@ -9,13 +10,6 @@ let globalSession;
 
 /** PUBLIC METHODS 
  */
-export interface IloginOptions {
-  idp? : string,
-  username? : string,
-  password? : string,
-  debug? : boolean,
-  rest? : any,
-}
 export async function fetch(url:string,options:any) {
   return await globalSession.fetch(url,options);
 }
@@ -66,8 +60,7 @@ async function _getAuthSession(options:IloginOptions){
   })
 }
 async function _getAuthFetcher(options:IloginOptions,callback:Function){
-  const cookie = await getNodeSolidServerCookie(options.idp, options.username, options.password);
-  const authFetcher = await getAuthFetcher(options.idp, cookie, "https://solid-node-client");
+  authFetcher = await getAuthFetcher(options)
   let session = await getSession();
   authFetcher.onSession( async(s) => {
     let originalFetch = s.fetch;
