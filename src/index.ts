@@ -1,7 +1,7 @@
 import {getSession } from "solid-auth-fetcher";
 import {getAuthFetcher,IloginOptions} from "./obtain-auth-headers";
 import fetch from "node-fetch";
-import * as SolidRest from "solid-rest";
+import SolidRest from "solid-rest";
 
 let rest = new SolidRest();
 let DEBUG = false;

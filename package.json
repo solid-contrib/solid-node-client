@@ -11,9 +11,8 @@
   "author": "Jeff Zucker",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^6.12.6",
-    "solid-auth-fetcher": "^1.1.0",
-    "solid-rest": "^1.2.2"
+    "solid-auth-fetcher": "^1.2.1",
+    "solid-rest": "^1.2.3"
   },
   "devDependencies": {
     "typescript": "^4.0.5"
