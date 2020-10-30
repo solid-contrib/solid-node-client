@@ -4,7 +4,8 @@
   "description": "a client for nodejs access to Solid",
   "main": "./src/index.js",
   "scripts": {
-    "test": "node tests/all"
+    "test": "node tests/all",
+    "build": "tsc --esModuleInterop src/index"
   },
   "keywords": [],
   "author": "Jeff Zucker",
@@ -13,5 +14,7 @@
     "solid-auth-fetcher": "^1.2.1",
     "solid-rest": "^1.2.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  }
 }
