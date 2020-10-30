@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a client for nodejs access to Solid",
   "main": "./src/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "dependencies": {
     "ajv": "^6.12.6",
     "solid-auth-fetcher": "^1.2.1",
-    "solid-rest": "^1.2.2"
+    "solid-rest": "^1.2.3"
   },
   "devDependencies": {
     "typescript": "^4.0.5"
