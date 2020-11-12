@@ -39,147 +39,131 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.setRestHandlers = exports.currentAuthFetcher = exports.currentSession = exports.logout = exports.login = exports.fetch = void 0;
+exports.SolidNodeClient = exports.init = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var node_fetch_1 = __importDefault(require("node-fetch"));
 var solid_rest_1 = __importDefault(require("solid-rest"));
-var rest = new solid_rest_1["default"]();
-var DEBUG = false;
-var authFetcher;
-var globalSession;
-function fetch(url, options) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, globalSession.fetch(url, options)];
-                case 1: return [2 /*return*/, _a.sent()];
-            }
-        });
-    });
+function init() {
+    return new SolidNodeClient();
 }
-exports.fetch = fetch;
-function login(options) {
-    if (options === void 0) { options = {}; }
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    options.idp = options.idp || process.env.SOLID_IDP;
-                    options.username = options.username || process.env.SOLID_USERNAME;
-                    options.password = options.password || process.env.SOLID_PASSWORD;
-                    options.debug = options.debug || (process.env.SOLID_DEBUG) ? true : false;
-                    options.rest = rest;
-                    return [4 /*yield*/, _getAuthSession(options)];
-                case 1: return [2 /*return*/, _a.sent()];
-            }
-        });
-    });
-}
-exports.login = login;
-function logout() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!globalSession.loggedIn) return [3 /*break*/, 2];
-                    return [4 /*yield*/, globalSession.logout()];
-                case 1:
-                    _a.sent();
-                    _a.label = 2;
-                case 2:
-                    globalSession = new NodeNoAuthSession();
-                    authFetcher = null;
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.logout = logout;
-function currentSession() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, (globalSession.loggedIn) ? globalSession : null];
-        });
-    });
-}
-exports.currentSession = currentSession;
-function currentAuthFetcher() {
-    return authFetcher;
-}
-exports.currentAuthFetcher = currentAuthFetcher;
-function setRestHandlers(handlers) {
-    if (typeof handlers != "undefined") {
-        rest = new solid_rest_1["default"](handlers);
+exports.init = init;
+var SolidNodeClient = /** @class */ (function () {
+    function SolidNodeClient(options) {
+        if (options === void 0) { options = {}; }
+        options = options || {};
+        this.rest = options.rest || new solid_rest_1["default"]();
+        this.session = options.session || new NodeNoAuthSession({ rest: this.rest });
+        this.debug = false;
+        return this;
     }
-}
-exports.setRestHandlers = setRestHandlers;
-/** END OF PUBLIC METHODS
- */
-/** AUTHENTICATED SESSION
- */
-function _getAuthSession(options) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            options.idp = options.idp || process.env.SOLID_IDP;
-            options.username = options.username || process.env.SOLID_USERNAME;
-            options.password = options.password || process.env.SOLID_PASSWORD;
-            options.debug = options.debug || (process.env.SOLID_DEBUG) ? true : false;
-            options.rest = rest;
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    _getAuthFetcher(options, function (session) {
-                        resolve(session);
-                    });
-                })];
+    SolidNodeClient.prototype.fetch = function (url, options) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.session.fetch(url, options)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
         });
-    });
-}
-function _getAuthFetcher(options, callback) {
-    return __awaiter(this, void 0, void 0, function () {
-        var cookie, session;
-        var _this = this;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, solid_auth_fetcher_1.getNodeSolidServerCookie(options.idp, options.username, options.password)];
-                case 1:
-                    cookie = _a.sent();
-                    return [4 /*yield*/, solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, "https://solid-node-client")];
-                case 2:
-                    authFetcher = _a.sent();
-                    return [4 /*yield*/, solid_auth_fetcher_1.getSession()];
-                case 3:
-                    session = _a.sent();
-                    authFetcher.onSession(function (s) { return __awaiter(_this, void 0, void 0, function () {
-                        var originalFetch;
-                        return __generator(this, function (_a) {
-                            originalFetch = s.fetch;
-                            s.fetch = function (url, opts) {
-                                if (url.startsWith('http'))
-                                    return originalFetch(url, opts);
-                                return options.rest.fetch(url, opts);
-                            };
-                            globalSession = s;
-                            callback(s);
-                            return [2 /*return*/];
+    };
+    SolidNodeClient.prototype.login = function (options) {
+        return __awaiter(this, void 0, void 0, function () {
+            var self;
+            var _this = this;
+            return __generator(this, function (_a) {
+                options = options || {};
+                options.idp = options.idp || process.env.SOLID_IDP;
+                options.username = options.username || process.env.SOLID_USERNAME;
+                options.password = options.password || process.env.SOLID_PASSWORD;
+                options.debug = options.debug || (process.env.SOLID_DEBUG) ? true : false;
+                self = this;
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        _this._getAuthFetcher(options, function (session) {
+                            self.session = session;
+                            resolve(session);
                         });
-                    }); });
-                    return [2 /*return*/];
-            }
+                    })];
+            });
         });
-    });
-}
+    };
+    SolidNodeClient.prototype._getAuthFetcher = function (options, callback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var cookie, _a, session, self;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, solid_auth_fetcher_1.getNodeSolidServerCookie(options.idp, options.username, options.password)];
+                    case 1:
+                        cookie = _b.sent();
+                        _a = this;
+                        return [4 /*yield*/, solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, "https://solid-node-client")];
+                    case 2:
+                        _a.authFetcher = _b.sent();
+                        return [4 /*yield*/, solid_auth_fetcher_1.getSession()];
+                    case 3:
+                        session = _b.sent();
+                        self = this;
+                        this.authFetcher.onSession(function (s) { return __awaiter(_this, void 0, void 0, function () {
+                            var originalFetch;
+                            return __generator(this, function (_a) {
+                                originalFetch = s.fetch;
+                                s.fetch = function (url, opts) {
+                                    if (url.startsWith('http'))
+                                        return originalFetch(url, opts);
+                                    return self.rest.fetch(url, opts);
+                                };
+                                s.fetch.bind(s);
+                                callback(s);
+                                return [2 /*return*/];
+                            });
+                        }); });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SolidNodeClient.prototype.logout = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.session.loggedIn) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.session.logout()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        this.session = new NodeNoAuthSession({ rest: this.rest });
+                        this.authFetcher = null;
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    SolidNodeClient.prototype.currentSession = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, (this.session.loggedIn) ? this.session : null];
+            });
+        });
+    };
+    return SolidNodeClient;
+}());
+exports.SolidNodeClient = SolidNodeClient;
 /** UNAUTHENTICATED SESSION
  */
 var NodeNoAuthSession = /** @class */ (function () {
-    function NodeNoAuthSession() {
+    function NodeNoAuthSession(options) {
+        if (options === void 0) { options = {}; }
         this.loggedIn = false;
+        this.rest = options.rest;
     }
     NodeNoAuthSession.prototype.logout = function () { };
     NodeNoAuthSession.prototype.fetch = function (url, options) {
         if (url.startsWith('http'))
             return node_fetch_1["default"](url, options);
-        return rest.fetch(url, options);
+        return this.rest.fetch(url, options);
     };
     return NodeNoAuthSession;
 }());
-globalSession = new NodeNoAuthSession();
 /* END */ 

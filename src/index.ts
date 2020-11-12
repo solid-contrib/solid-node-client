@@ -3,102 +3,103 @@ import { getSession, getNodeSolidServerCookie, getAuthFetcher }
 import fetch from "node-fetch";
 import SolidRest from "solid-rest";
 
-let rest = new SolidRest();
-let DEBUG = false;
-let authFetcher;
-let globalSession;
+export function init(){
+  return new SolidNodeClient();
+}
 
-/** PUBLIC METHODS 
+export class SolidNodeClient {
+  rest?:any;
+  session?:any;
+  debug?:any;
+  authFetcher?:any;
+  constructor(options:any={}){
+    options = options || {};
+    this.rest = options.rest || new SolidRest();
+    this.session = options.session || new NodeNoAuthSession({rest:this.rest});
+    this.debug = false;
+    return this;
+  }
+  async fetch(url:string,options:any) {
+    return await this.session.fetch(url,options);
+  }
+  async login(options:IloginOptions) {
+    options = options || {};
+    options.idp      = options.idp || process.env.SOLID_IDP;
+    options.username = options.username || process.env.SOLID_USERNAME;
+    options.password = options.password || process.env.SOLID_PASSWORD;
+    options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
+    let self=this;
+    return new Promise((resolve, reject) => {
+      this._getAuthFetcher( options, (session) => {
+        self.session = session;
+        resolve(session);
+      });
+    })
+  }
+  async _getAuthFetcher(options:IloginOptions,callback:Function){
+    const cookie = await getNodeSolidServerCookie(
+      options.idp, options.username, options.password
+    );
+    this.authFetcher = await getAuthFetcher(
+      options.idp, cookie, "https://solid-node-client"
+    );
+    let session = await getSession();
+    let self=this;
+    this.authFetcher.onSession( async(s) => {
+      let originalFetch = s.fetch;
+      s.fetch = (url:string,opts:any) => {
+        if( url.startsWith('http') ) return originalFetch(url,opts);
+        return self.rest.fetch(url,opts);
+      }
+      s.fetch.bind(s)
+      callback(s);
+    });
+  }
+  async logout() {
+    if(this.session.loggedIn) {
+      await this.session.logout();
+    }
+    this.session = new NodeNoAuthSession({rest:this.rest});
+    this.authFetcher = null;
+ }
+ async currentSession(){
+    return ( this.session.loggedIn ) ? this.session : null ;
+  }
+}
+
+/** UNAUTHENTICATED SESSION 
  */
-export interface IloginOptions {
+class NodeNoAuthSession {
+  loggedIn: boolean;
+  rest: any;
+  constructor(options:any={}){
+    this.loggedIn=false;
+    this.rest=options.rest;
+  }
+  logout() {}
+  fetch(url:string,options:any) {
+    if( url.startsWith('http') ) return fetch(url,options)
+    return this.rest.fetch(url,options);
+  }
+}
+
+/** INTERFACES
+ */
+interface IloginOptions {
   idp? : string,
   username? : string,
   password? : string,
   debug? : boolean,
   rest? : any,
 }
-export async function fetch(url:string,options:any) {
-  return await globalSession.fetch(url,options);
+interface InodeClient {
+  session? : any;
+  rest? : any;
+  debug? : any;
+  authFetcher? : any;
+  fetch(url:string,options:any):any;
+  login(options:IloginOptions):any;
+  logout():void;
 }
-export async function login(options:IloginOptions={}) {
-  options.idp      = options.idp || process.env.SOLID_IDP;
-  options.username = options.username || process.env.SOLID_USERNAME;
-  options.password = options.password || process.env.SOLID_PASSWORD;
-  options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
-  options.rest     = rest
-  return await  _getAuthSession( options );
-}
-export async function logout() {
-  if(globalSession.loggedIn) {
-    await globalSession.logout();
-  }
-  globalSession = new NodeNoAuthSession();
-  authFetcher = null;
-}
-export async function currentSession(){
-  return ( globalSession.loggedIn ) ? globalSession : null ;
-}
-export function currentAuthFetcher() {
-   return authFetcher; 
-}
-export function setRestHandlers(handlers){
-  if(typeof handlers !="undefined"){
-    rest = new SolidRest( handlers ); 
-  }
-} 
-
-/** END OF PUBLIC METHODS 
- */
-
-
-/** AUTHENTICATED SESSION
- */
-
-async function _getAuthSession(options:IloginOptions){
-  options.idp      = options.idp || process.env.SOLID_IDP;
-  options.username = options.username || process.env.SOLID_USERNAME;
-  options.password = options.password || process.env.SOLID_PASSWORD;
-  options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
-  options.rest     = rest;
-  return new Promise((resolve, reject) => {
-    _getAuthFetcher( options, (session) => {
-      resolve(session);
-    });
-  })
-}
-async function _getAuthFetcher(options:IloginOptions,callback:Function){
-  const cookie = await getNodeSolidServerCookie(
-    options.idp, options.username, options.password
-  );
-  authFetcher = await getAuthFetcher(
-    options.idp, cookie, "https://solid-node-client"
-  );
-  let session = await getSession();
-  authFetcher.onSession( async(s) => {
-    let originalFetch = s.fetch;
-    s.fetch = (url:string,opts:any) => {
-      if( url.startsWith('http') ) return originalFetch(url,opts);
-      return options.rest.fetch(url,opts);
-    }
-    globalSession =  s;
-    callback(s);
-  });
-}
-
-
-/** UNAUTHENTICATED SESSION 
- */
-class NodeNoAuthSession {
-  loggedIn: boolean;
-  constructor(){
-    this.loggedIn=false;
-  }
-  logout() {}
-  fetch(url:string,options:any) {
-    if( url.startsWith('http') ) return fetch(url,options)
-    return rest.fetch(url,options);
-  }
-}
-globalSession = new NodeNoAuthSession();
 
 /* END */
