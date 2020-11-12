@@ -15,7 +15,7 @@
     "solid-rest": "^1.2.6"
   },
   "devDependencies": {
-    "rdflib": "^2.1.1",
+    "rdflib": "2.1.1",
     "typescript": "4.0.5"
   }
 }
