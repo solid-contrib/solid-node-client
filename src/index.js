@@ -39,19 +39,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.SolidNodeClient = exports.init = void 0;
+exports.SolidNodeClient = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var node_fetch_1 = __importDefault(require("node-fetch"));
-var solid_rest_1 = __importDefault(require("solid-rest"));
-function init() {
-    return new SolidNodeClient();
-}
-exports.init = init;
+var rest_js_1 = __importDefault(require("../../solid-rest/src/rest.js"));
 var SolidNodeClient = /** @class */ (function () {
     function SolidNodeClient(options) {
         if (options === void 0) { options = {}; }
         options = options || {};
-        this.rest = options.rest || new solid_rest_1["default"]();
+        this.rest = options.rest || new rest_js_1["default"](options);
         this.session = options.session || new NodeNoAuthSession({ rest: this.rest });
         this.debug = false;
         return this;

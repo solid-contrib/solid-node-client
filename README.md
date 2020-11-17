@@ -28,7 +28,6 @@ async function main(){
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
 import * as $rdf from 'rdflib';
-global.$rdf = $rdf;
 const client = new SolidNodeClient();
 const store   = $rdf.graph();
 const fetcher = $rdf.fetcher(store,{fetch:client.fetch.bind(client)});  
@@ -94,18 +93,17 @@ console.log( writeResponse.status  );  // 201
 // now read it
 let readResponse = await client.fetch( 'https://example.com/file.text' );
 // display its contents
-console.log( await response.text()  );
+console.log( await readResponse.text()  );
 ```
 
 ### Note about Patch
 
-PATCH is supported by solid-node-client, but *only* if your script imports rdflib and set the global.$rdf variable.  The syntax for PATCH is the same as in rdflib.
+PATCH is supported by solid-node-client, but *only* if your script imports rdflib and you set the parser option for new SolidNodeClient().  The syntax for PATCH is the same as in rdflib.
 
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
 import * as $rdf from 'rdflib';
-global.$rdf = $rdf;
-const client = new SolidNodeClient();
+const client = new SolidNodeClient({parser:$rdf});
 // client.fetch() now supports PATCH on file: URLs and all solid-rest backends
 ```
 
@@ -124,6 +122,13 @@ It is now possible to login multiple times from the same script.  You can create
 }
 ```
 
+## Working with underlying session objects
+
+The solid-auth-fetcher session and authFetcher objects are available for each client.  See the solid-auth-fetcher docs for details :
+```javascript
+  if( client.session.loggedIn() ...
+  let authFetcher = client.authFetcher ...  
+```
 
 ## Acknowledgements
 

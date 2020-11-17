@@ -1,20 +1,17 @@
 import { getSession, getNodeSolidServerCookie, getAuthFetcher } 
   from "solid-auth-fetcher";
 import fetch from "node-fetch";
-import SolidRest from "solid-rest";
-
-export function init(){
-  return new SolidNodeClient();
-}
+import SolidRest from "../../solid-rest/src/rest.js";
 
 export class SolidNodeClient {
   rest?:any;
   session?:any;
   debug?:any;
   authFetcher?:any;
+  parser?:any;
   constructor(options:any={}){
     options = options || {};
-    this.rest = options.rest || new SolidRest();
+    this.rest = options.rest || new SolidRest(options);
     this.session = options.session || new NodeNoAuthSession({rest:this.rest});
     this.debug = false;
     return this;
