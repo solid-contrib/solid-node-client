@@ -1,7 +1,7 @@
 import { getSession, getNodeSolidServerCookie, getAuthFetcher } 
   from "solid-auth-fetcher";
 import fetch from "node-fetch";
-import SolidRest from "../../solid-rest/src/rest.js";
+import SolidRest from "solid-rest";
 
 export class SolidNodeClient {
   rest?:any;

@@ -42,12 +42,12 @@ exports.__esModule = true;
 exports.SolidNodeClient = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var node_fetch_1 = __importDefault(require("node-fetch"));
-var rest_js_1 = __importDefault(require("../../solid-rest/src/rest.js"));
+var solid_rest_1 = __importDefault(require("solid-rest"));
 var SolidNodeClient = /** @class */ (function () {
     function SolidNodeClient(options) {
         if (options === void 0) { options = {}; }
         options = options || {};
-        this.rest = options.rest || new rest_js_1["default"](options);
+        this.rest = options.rest || new solid_rest_1["default"](options);
         this.session = options.session || new NodeNoAuthSession({ rest: this.rest });
         this.debug = false;
         return this;
