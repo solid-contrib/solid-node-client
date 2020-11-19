@@ -2,7 +2,11 @@
                                                                                
 -- **a nodejs client for Solid** --    
 
-This library uses [solid-auth-fetcher](https://github.com/solid/solid-auth-fetcher) to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
+This library provides access to [Solid](https://solidproject.org/) from the command line and from local scripts and apps which either run in the console or in a local browser based context like electron. It can be used to move resources back and forth between a local commputer and one or more  pods, carry out remote operations on pods, and can also treat your local file system as a serverless pod.
+
+Solid-Node-Client uses [solid-auth-fetcher](https://github.com/solid/solid-auth-fetcher) to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
+
+Solid-node-client can be used stand-alone, or can be used with [rdflib](https://github.com/linkeddata/rdflib.js), [solid-file-client](https://github.com/jeff-zucker/solid-file-client/), and most other Solid apps.  See [creating a serverless pod](#pod) for additional details.
 
 As of version 1.2.0, solid node client now supports multiple logins from the same script. See [below](#multiple) for details
                                                                                
@@ -129,6 +133,16 @@ The solid-auth-fetcher session and authFetcher objects are available for each cl
   if( client.session.loggedIn() ...
   let authFetcher = client.authFetcher ...  
 ```
+
+## <a name="pod">Creating a serverless pod</a>
+
+Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote pod, but the easiest thing to do is use the built-in createLocalPod method.
+```javascript
+import {SolidNodeClient} from 'solid-node-client';
+const client = new SolidNodeClient();
+client.createLocalPod('file:///home/jeff/myPod/');
+```
+The code above will create a profile, preferences and other key pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
 
 ## Acknowledgements
 

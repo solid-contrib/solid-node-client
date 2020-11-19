@@ -1,5 +1,7 @@
 import { getSession, getNodeSolidServerCookie, getAuthFetcher } 
   from "solid-auth-fetcher";
+import {profile_content,prefs_content,private_content,public_content}
+  from './createLocalPod.js';
 import fetch from "node-fetch";
 import SolidRest from "solid-rest";
 
@@ -58,10 +60,29 @@ export class SolidNodeClient {
     }
     this.session = new NodeNoAuthSession({rest:this.rest});
     this.authFetcher = null;
- }
- async currentSession(){
+  }
+  async currentSession(){
     return ( this.session.loggedIn ) ? this.session : null ;
   }
+  async createLocalPod( base:string ){
+    base = base.replace(/\/$/,'');
+    await this.makeResource( base,"/profile/card", profile_content );
+    await this.makeResource( base,"/settings/prefs.ttl", prefs_content );
+    await this.makeResource(base,"/settings/privateTypeIndex.ttl",private_content );
+    await this.makeResource( base,"/settings/publicTypeIndex.ttl", public_content );
+    await this.makeResource( base,"/public/.meta", "" );
+    await this.makeResource( base,"/inbox/.meta", "" );
+  }
+  async makeResource( base:string, path:string, content:string ){
+    let url = base + path
+    console.log ( "Creating " + url )
+    await this.fetch( url, {
+      method:"PUT",
+      body:content,
+      headers:{"content-type":"text/turtle"}
+    })
+  }
+
 }
 
 /** UNAUTHENTICATED SESSION 
