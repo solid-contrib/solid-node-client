@@ -41,7 +41,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 exports.__esModule = true;
 exports.SolidNodeClient = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
-var createLocalPod_js_1 = require("./createLocalPod.js");
+/*
+import
+  {profile_content,prefs_content,private_content,public_content,acl_content}
+  from './createLocalPod.js';
+*/
 var node_fetch_1 = __importDefault(require("node-fetch"));
 var solid_rest_1 = __importDefault(require("solid-rest"));
 var SolidNodeClient = /** @class */ (function () {
@@ -144,52 +148,10 @@ var SolidNodeClient = /** @class */ (function () {
             });
         });
     };
-    SolidNodeClient.prototype.createLocalPod = function (base) {
+    SolidNodeClient.prototype.createServerlessPod = function (base) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        base = base.replace(/\/$/, '');
-                        return [4 /*yield*/, this.makeResource(base, "/profile/card", createLocalPod_js_1.profile_content)];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.makeResource(base, "/settings/prefs.ttl", createLocalPod_js_1.prefs_content)];
-                    case 2:
-                        _a.sent();
-                        return [4 /*yield*/, this.makeResource(base, "/settings/privateTypeIndex.ttl", createLocalPod_js_1.private_content)];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, this.makeResource(base, "/settings/publicTypeIndex.ttl", createLocalPod_js_1.public_content)];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, this.makeResource(base, "/public/.meta", "")];
-                    case 5:
-                        _a.sent();
-                        return [4 /*yield*/, this.makeResource(base, "/inbox/.meta", "")];
-                    case 6:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    SolidNodeClient.prototype.makeResource = function (base, path, content) {
-        return __awaiter(this, void 0, void 0, function () {
-            var url;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        url = base + path;
-                        console.log("Creating " + url);
-                        return [4 /*yield*/, this.fetch(url, {
-                                method: "PUT",
-                                body: content,
-                                headers: { "content-type": "text/turtle" }
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, this.rest.createServerlessPod(base)];
             });
         });
     };

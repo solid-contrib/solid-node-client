@@ -136,11 +136,11 @@ The solid-auth-fetcher session and authFetcher objects are available for each cl
 
 ## <a name="pod">Creating a serverless pod</a>
 
-Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote pod, but the easiest thing to do is use the built-in createLocalPod method.
+Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote pod, but the easiest thing to do is use the built-in createServerlessPod method.
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
 const client = new SolidNodeClient();
-client.createLocalPod('file:///home/jeff/myPod/');
+client.createServerlessPod('file:///home/jeff/myPod/');
 ```
 The code above will create a profile, preferences and other key pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
 

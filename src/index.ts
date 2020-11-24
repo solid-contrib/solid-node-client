@@ -1,7 +1,11 @@
-import { getSession, getNodeSolidServerCookie, getAuthFetcher } 
+import
+  { getSession, getNodeSolidServerCookie, getAuthFetcher } 
   from "solid-auth-fetcher";
-import {profile_content,prefs_content,private_content,public_content}
+/*
+import 
+  {profile_content,prefs_content,private_content,public_content,acl_content}
   from './createLocalPod.js';
+*/
 import fetch from "node-fetch";
 import SolidRest from "solid-rest";
 
@@ -64,25 +68,33 @@ export class SolidNodeClient {
   async currentSession(){
     return ( this.session.loggedIn ) ? this.session : null ;
   }
+  async createServerlessPod( base:string ){
+    return this.rest.createServerlessPod( base );
+  }
+/*
   async createLocalPod( base:string ){
+    console.log(`Creating pod at <${base}>`);
     base = base.replace(/\/$/,'');
+    await this.makeResource( base,"/.acl", acl_content );
     await this.makeResource( base,"/profile/card", profile_content );
     await this.makeResource( base,"/settings/prefs.ttl", prefs_content );
     await this.makeResource(base,"/settings/privateTypeIndex.ttl",private_content );
     await this.makeResource( base,"/settings/publicTypeIndex.ttl", public_content );
+    await this.makeResource( base,"/private/.meta", "" );
+    await this.makeResource( base,"/.well-known/.meta", "" );
     await this.makeResource( base,"/public/.meta", "" );
     await this.makeResource( base,"/inbox/.meta", "" );
   }
   async makeResource( base:string, path:string, content:string ){
     let url = base + path
-    console.log ( "Creating " + url )
+    console.log ( "  creating " + path )
     await this.fetch( url, {
       method:"PUT",
       body:content,
       headers:{"content-type":"text/turtle"}
     })
   }
-
+*/
 }
 
 /** UNAUTHENTICATED SESSION 
