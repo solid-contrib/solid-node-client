@@ -62,6 +62,7 @@ export SOLID_DEBUG=1
 npm ci
 npm run build
 node examples/uploadOverwrite.js ../something/local/ https://user.solidcommunity.net/private/something/
+node examples/get.js https://user.solidcommunity.net/private/something/one.ttl
 ```
 
 ## Methods

@@ -14,17 +14,15 @@ async function run(localPath, podPath) {
     console.log('Appending slash to pod path');
     podPath += '/';
   }
-  const promises = fs.readdirSync(localPath).map(async (fileName) => {
-    // console.log('File to upload/overwrite (assuming contents are text/turtle');
-    // console.log(fileName);
-    const result = await client.fetch(podPath + fileName, {
+  const putPromises = fs.readdirSync(localPath).map(async (fileName) => {
+      const putResult = await client.fetch(podPath + fileName, {
       'Content-Type': 'text/turtle',
       method: 'PUT',
       body: fs.readFileSync(localPath + fileName)
     });
-    console.log(localPath + fileName, '->', podPath + fileName, result.status);
+    console.log(localPath + fileName, '->', podPath + fileName, putResult.status);
   });
-  await Promise.all(promises);
+  await Promise.all(putPromises);
 }
 
 // ...
