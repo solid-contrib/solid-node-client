@@ -52,7 +52,18 @@ async function main(){
 **2. give the app permission**                                                 
                            
 Skip this step if you don't need authenticated access to a pod.  To get authenticated access to a pod, you will need to add "https://solid-node-client" as a trusted app on that pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this.                       
-    
+
+## Example: Upload and overwrite a folder in your pod
+```sh
+export SOLID_IDP=https://solidcommunity.net
+export SOLID_USERNAME=user
+export SOLID_PASSWORD=...
+export SOLID_DEBUG=1
+npm ci
+npm run build
+node examples/uploadOverwrite.js ../something/local/ https://user.solidcommunity.net/private/something/
+```
+
 ## Methods
 
 ### login(options)
@@ -61,7 +72,7 @@ Logs the user in to a Solid pod and returns an authenticated session.  Credentia
 
 If these variables are part of your environment, you can use the login() method without arguments.
 
-  * **SOLID_IDP** // the server root e.g. https://solidcoummunity.net (no trailing slash)
+  * **SOLID_IDP** // the server root e.g. https://solidcommunity.net (no trailing slash)
   * **SOLID_USERNAME** // your username on the server
   * **SOLID_PASSWORD** // your password on the server
   * **SOLID_DEBUG** // set this if you want to output extended login and session debugging
