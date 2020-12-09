@@ -44,7 +44,7 @@ if( session.info.isLoggedIn ) {
 ```   
 That's all!
 
-## Working with plugins
+## <a name="plugins">Working with plugins</a>
 
 Solid-Node-Client comes with default handlers for three types of fetches, so a call to *new SolidNodeClient()* with no arguments is the equivalent of doing this:
 ```javascript
