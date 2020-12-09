@@ -9,7 +9,7 @@ cd solid-node-client
 npm install
 npm run build
 ```
-**NOTE:** This is an experimental branch that provides a [plugin system](#plugins) including support for using **solid-client-authn-node**.  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
+**NOTE:** This is an experimental branch that provides a [plugin system](#plugins) including support for using [Inrupt's](http://inrupt.com) excellent [solid-client-authn-node](https://github.com/inrupt/solid-client-authn-js/tree/master/packages/node/example/bootstrappedApp).  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
 
 ## Using with ESS and CSS
 
