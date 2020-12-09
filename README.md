@@ -2,15 +2,22 @@
                                                                                
 -- **a nodejs client for Solid** --    
 
-**NOTE:** This is an experimental branch that provides a plugin system including support for using solid-client-authn-node.  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
+## To install
+```
+git clone -b solid-client-authn https://github.com/solid/solid-node-client.git
+cd solid-node-client
+npm install
+npm run build
+```
+**NOTE:** This is an experimental branch that provides a plugin system including support for using **solid-client-authn-node**.  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
 
-If you want to use ESS or CSS, here's how:
+## Using with ESS and CSS
 
 ## 1. get a cookie (do this once, then it's good for several weeks)
 
 From the command-line, 
 
-* Change to the [./node_modules/@inrupt/solid-client-authn-node/example/bootstrappedApp/src/](./node_modules/@inrupt/solid-client-authn-node/example/bootstrappedApp/src/),
+* Change to the **./node_modules/@inrupt/solid-client-authn-node/example/bootstrappedApp/src/** folder.
 
 * Run the bootstrap.js script.  It will prompt you for user name and identity provider, then show you a URL.  Go to that URL in your browser and follow the steps to login.  Once you've logged in, you should see a message telling you to close the login window, and back on the command line you should see a cookie with the tokens and secrets you need to login.  Copy the cookie text and save it in a safe place.
 
