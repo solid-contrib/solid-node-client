@@ -39,7 +39,7 @@ if( session.info.isLoggedIn ) {
   // client.fetch() will now be an authenticated fetch on ESS/CSS
 }
 ```   
-That's all!
+That's all! You should be able to use all of the documentation below except for install and login which should works as above for ESS/CSS.
 
 ## <a name="plugins">Working with plugins</a>
 
@@ -66,7 +66,7 @@ In cases where you have no need for a protocol, you can specify it as an empty s
     }})
 ```
 Here's a picture of Solid-Node-Client's plugin architecture.
-<img src="./solid-node-client.png"> Many thanks to **CxRes** for helping design this architecture.
+<img src="./solid-node-client.png">
   
 ## <a name="old">Old Documentation (works on NSS for now)</a>
 
@@ -193,6 +193,7 @@ It is now possible to login multiple times from the same script.  You can create
   //     client_3 is unauthenticated
 }
 ```
+One **caveat** is that  curreently you may not have both a solid-auth-fetcher client and a solid-client-authn-node client in the same process.  This will hopefuly change in the future.
 
 ## Working with underlying session objects
 
@@ -204,6 +205,8 @@ The solid-auth-fetcher session and authFetcher objects are available for each cl
 
 ## <a name="pod">Creating a serverless pod</a>
 
+Solid-Node-Client, when using solid-rest-* plugins for file: and other protocls, can treat the backend as a serverless pod. This means that requests to the backend will respond the way a pod does - reading a directory returns a turtle representation of the directory, writing a file creates its parent directories if they don't exist, headers are sent for wac-allow, content-type, etc.  This all means that core Solid libraries and apps such as rdlib, mashlib, the databrowser can address the serverless pod the same way they would a server-based pod.  The one exception is ACL files.  These are returned in link headers and read and written as on a server-based pod.  However, they do not control access to resources, that is done with file system checks (e.g. *nix read/write permissions).
+
 Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote pod, but the easiest thing to do is use the built-in createServerlessPod method.
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
@@ -214,7 +217,7 @@ The code above will create a profile, preferences and other key pod resources in
 
 ## Acknowledgements
 
-All of the session management is from Jackson Creed's solid-auth-fetcher.  The login is from Michiel de Jong's solid-crud-tests.
+Many thanks to Michiel de Jong, Alain Bourgeois, CxRes, Otto_A_A for their contributions.
 
 ## Copyright and License
 
