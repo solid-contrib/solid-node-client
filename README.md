@@ -9,21 +9,18 @@ cd solid-node-client
 npm install
 npm run build
 ```
-**NOTE:** This is an experimental branch that provides a plugin system including support for using **solid-client-authn-node**.  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
+**NOTE:** This is an experimental branch that provides a [plugin system](#plugins) including support for using **solid-client-authn-node**.  For the time being, to use with NSS or PSS, skip this next session and got straight to [the old docs](#old).
 
 ## Using with ESS and CSS
 
 ## 1. get a cookie (do this once, then it's good for several weeks)
 
-From the command-line, 
-
-* Change to the **./node_modules/@inrupt/solid-client-authn-node/example/bootstrappedApp/src/** folder.
-
-* Run the bootstrap.js script.  It will prompt you for user name and identity provider, then show you a URL.  Go to that URL in your browser and follow the steps to login.  Once you've logged in, you should see a message telling you to close the login window, and back on the command line you should see a cookie with the tokens and secrets you need to login.  Copy the cookie text and save it in a safe place.
+After you have installed Solid-Node-Client, change into this directory : node_modules/@inrupt/solid-client-authn-node/example/bootstrappedApp and follow the instructions 
+[here](https://github.com/inrupt/solid-client-authn-js/tree/master/packages/node/example/bootstrappedApp) to get a token. Store it in a safe place.
 
 ## 2. use the cookie to login
 
-Retrieve the cookie as a json string from wherever you stored it in step #1.
+Retrieve the cookie  from wherever you stored it in step #1.
 Then use it in a script or app like this (replacing the $COOKIE varibales with the ones from the cookie):
 ```javascript
 const {SolidNodeClient} = require('solid-node-client');
@@ -54,7 +51,7 @@ Solid-Node-Client comes with default handlers for three types of fetches, so a c
       fallback : 'node-fetch',          // all other fetches
     }})
 ```
-Users may specify 'solid-client-authn-node' as the https fetcher and may also spcify a handler for mem as 'solid-rest-mem' (this means that mem://foo/bar/ is an in-memory simulated container accessible as a serverless pod).
+Users may specify 'solid-client-authn-node' as the https fetcher when they need to login to ESS.
 
 Users may also specify any of the fetchers as objects that they have imported and instantiated.  So if you have a new auth package you could do this:
 ```javascript
@@ -62,6 +59,14 @@ Users may also specify any of the fetchers as objects that they have imported an
       https    : new yourCustomAuthLibrary() // authenticated web fetches
     }})
 ```
+In cases where you have no need for a protocol, you can specify it as an empty string, and it will not be loaded.
+```javascript
+    const client = new SolidNodeCient({ handlers : {
+      file : "" // this app doesn't use file fetches, so don't load
+    }})
+```
+Here's a picture of Solid-Node-Client's plugin architecture.
+<img src="./solid-node-client.png"> Many thanks to **CxRes** for helping design this architecture.
   
 ## <a name="old">Old Documentation (works on NSS for now)</a>
 
