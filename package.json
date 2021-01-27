@@ -12,10 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "solid-auth-fetcher": "^1.3.5",
-    "solid-rest": "^1.3.1"
+    "solid-rest": "^1.3.2"
   },
   "devDependencies": {
-    "rdflib": "^2.1.3",
-    "typescript": "4.1.2"
+    "rdflib": "^2.1.7",
+    "typescript": "4.1.3"
   }
 }
