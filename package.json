@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "a client for nodejs access to Solid",
   "main": "./src/index.js",
   "scripts": {
