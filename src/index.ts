@@ -1,14 +1,21 @@
-import {initHandlers} from './getAuthSession';
-const UrlObj = require('url');
+import {SolidRestFile} from '@solid-rest/file';
+import {NoAuthSession} from './NoAuthSession'
+import fetch from "node-fetch";
+import * as UrlObj from 'url';
 
 export class SolidNodeClient {
-  session?:any;
   debug?:any;
   handlers?:any;
   parser?:any;
   constructor(options:any={}){
     options = options || {};
-    this.handlers = initHandlers( options.handlers );
+    options.handlers = options.handlers || {};
+    options.handlers.http = options.handlers.http || fetch;
+    options.handlers.file = options.handlers.file || new NoAuthSession({
+      httpFetch: options.handlers.http,
+      fileHandler: new SolidRestFile() 
+    });
+    this.handlers = options.handlers;    
     this.debug = false;
     return this;
   }
@@ -16,22 +23,35 @@ export class SolidNodeClient {
     let protocol = new UrlObj.URL(url).protocol.replace(/:$/,'');
     let _fetch = this.handlers[protocol] && this.handlers[protocol].session 
                ? this.handlers[protocol].session.fetch 
-               : this.handlers.fallback.fetch;
+               : this.handlers.fallback && this.handlers.fallback.fetch
+               ? this.handlers.fallback.fetch
+               : this.handlers.file.session.fetch;
     return await _fetch(url.toString(),options)
   }
-  async login(options:any={}) {
-    options = options || {}
-    let session = await this.handlers.https.login(options);
-    return session  || this.handlers.fallback.session;
-  }
-  async logout() {
-    if(this.session.info.isLoggedIn) {
-      await this.session.logout();
+  async login(credentials:any={},protocol:string="https") {
+    this.handlers.https = this.handlers.https || "";
+    if(protocol==='https' && typeof this.handlers.https === 'string'){
+      if(this.handlers.https==='solid-client-authn-node'){
+        let scan = await import('./EssAuthSession');           
+        this.handlers.https = new scan.EssAuthSession();
+      }
+      else {
+        let saf = await import('./NssAuthSession');           
+        this.handlers.https = new saf.NssAuthSession();
+      }
     }
-     this.session = this.handlers.fallback;
+    const session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
+    return session;
   }
-  async currentSession(){
-    return ( this.session.loggedIn ) ? this.session : null ;
+  async getSession(protocol:string="https") {
+    const session = this.handlers[protocol] && this.handlers[protocol].session ?this.handlers[protocol].session :this.handlers.file.session;
+    return session;
+  }
+  async logout(protocol:string="https") {
+    const session = await this.getSession(protocol);    
+    if(session.info.isLoggedIn) {
+      await session.logout();
+    }
   }
   async createServerlessPod( base:string ){
     return this.handlers.fallback.createServerlessPod( base );
@@ -42,7 +62,7 @@ export class SolidNodeClient {
  */
 interface InodeClient {
   session? : any;
-  rest? : any;
+//  rest? : any;
   debug? : any;
   authFetcher? : any;
   fetch(url:string,options:any):any;
@@ -54,5 +74,5 @@ interface InodeClient {
     username? : string,
     password? : string,
     debug? : boolean,
-    rest? : any,
+//    rest? : any,
   }

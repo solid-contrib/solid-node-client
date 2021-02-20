@@ -45,7 +45,7 @@ export class NssAuthSession {
     let session = await getSession();
     this.authFetcher.onSession( async(s) => {
       s.info = {};
-      s.info.isLoggedIn = ()=>{ s.loggedIn }
+      s.info.isLoggedIn = s.isLoggedIn = s.loggedIn;
       s.info.webId = s.webId
       s.info.isNss = true
       callback(s);
