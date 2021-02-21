@@ -10,9 +10,9 @@ Solid-Node-Client is based on a plugin system.
 
 * **pluggable authentication** - To access private Pod data, you can plugin Inrupt's solid-client-authn-node, solid-auth-fetcher, or any other authentication packages with a similar API. See [authentication](#auth).
 
-* **pluggable backends** By default the backend may be a local server-based Pod, a remote server-based Pod, or a file system treated as a serverless Pod. Serverless Pods for Dropbox and SSH are in development.
+* **pluggable backends** By default the backend may be a local server-based Pod, a remote server-based Pod, or a file system treated as a serverless Pod. Serverless Pods for Dropbox, SSH, and BrowserFS are in development.
 
-* **pluggable frontends** Solid-node-client may be used stand-alone or in conjunction with other libraries such as rdflib, solid-client, solid-logic and others. See [using alternate frontends](#frontends).
+* **pluggable frontends** Solid-node-client may be used stand-alone or in conjunction with other libraries such as rdflib, solid-file-client and others. See [using alternate frontends](#frontends).
                                                                                
 ## An Example of Stand-Alone Usage
 ```javascript               
@@ -176,7 +176,7 @@ client.createServerlessPod('file:///home/jeff/myPod/');
 ```
 The code above will create a profile, preferences and other key Pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based Pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
 
-## Using Solid-Node-Client with other Libraries
+## <a name="frontends">Using Solid-Node-Client with other Libraries</a>
 
 ### Using with rdflib
 To use Solid-Node-Client with rdflib, just import it and bind its fetch to rdflib's fetcher as shown below.  Do that once at the top of your script and thereafter all fetches from rdflib methods such as load, putBack, webOperations, updateManager, etc. can be used against any Solid-Node-Client backends.  If you also login, you can use it to access private resources on remote Pods.
@@ -201,6 +201,33 @@ async function main(){
   let session = await client.login( myLoginProfile );
   if( session.isLoggedIn ) {
     await fetcher.load( somePrivateURL ); // authenticated fetch
+  }
+}
+main();
+```
+### Using with Solid-File-Client
+```javascript
+/* Log in,  then copy a private file from your pod to local file system
+*/
+import {SolidNodeClient} from 'solid-node-client';
+import SolidFileClient from 'solid-file-client';
+const auth = new SolidNodeClient();
+const fileClient = new SolidFileClient(auth);
+
+// Put your own functions for retrieving credentials here
+import {credentials} from '/home/jeff/.solid-identities.js';
+const loginSettings = credentials.solidCommunity;
+
+// Set paths to your files here
+const remoteUrl = `https://jeff-zucker.solidcommunity.net/private/hidden.html`;
+const localUrl =  `file://${process.cwd()}/test.html`;
+
+async function main(){
+  let session = await auth.login( loginSettings );
+  if( session.isLoggedIn ){
+     console.log(`Logged in as <${session.webId}>`);
+     let content = await fileClient.readFile( remoteUrl );
+     let res=await fileClient.createFile( localUrl, content,'text/turtle');
   }
 }
 main();
