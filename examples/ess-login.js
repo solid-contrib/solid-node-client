@@ -1,7 +1,7 @@
 /* To run  this example
     1. change directories to the solid-node-client folder
     2. npm run getToken, then follow prompts until JSON credentials are shown
-    3. cut and past the JSON credentrials into the $COOKIE below
+    3. cut and past the JSON credentrals into the $COOKIE below
     4. change the userRoot variable below to your own pod root
 */
 const userRoot = "https://pod.inrupt.com/jeff-zucker/";

@@ -176,6 +176,36 @@ client.createServerlessPod('file:///home/jeff/myPod/');
 ```
 The code above will create a profile, preferences and other key Pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based Pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
 
+## Using Solid-Node-Client with other Libraries
+
+### Using with rdflib
+To use Solid-Node-Client with rdflib, just import it and bind its fetch to rdflib's fetcher as shown below.  Do that once at the top of your script and thereafter all fetches from rdflib methods such as load, putBack, webOperations, updateManager, etc. can be used against any Solid-Node-Client backends.  If you also login, you can use it to access private resources on remote Pods.
+```javascript
+/* Use Solid-Node-Client and rdflib to read the contents of a local folder 
+*/
+import {SolidNodeClient} from '../';
+import * as $rdf from 'rdflib';
+
+const client = new SolidNodeClient();
+const store = $rdf.graph();
+const fetcher = $rdf.fetcher(store,{fetch:client.fetch.bind(client)});
+
+const localFolder = $rdf.sym(`file://${process.cwd()}/`);
+const contains = $rdf.sym(`http://www.w3.org/ns/ldp#contains`);
+
+async function main(){
+  await fetcher.load( localFolder );  // unauthenticated local fetch
+  store.match( folder, contains ).filter( (stmt)=>{
+    console.log( stmt.object.value )
+  });
+  let session = await client.login( myLoginProfile );
+  if( session.isLoggedIn ) {
+    await fetcher.load( somePrivateURL ); // authenticated fetch
+  }
+}
+main();
+```
+
 ## Acknowledgements
 
 Many thanks to Michiel de Jong, Alain Bourgeois, CxRes, Otto_A_A for their contributions.

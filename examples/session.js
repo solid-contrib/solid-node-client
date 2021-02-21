@@ -1,6 +1,5 @@
 import {SolidNodeClient} from '../';
 
-
 import {credentials} from '/home/jeff/.solid-identities.js';
 let creds = credentials.inruptCom;
 let authn = "solid-client-authn-node";

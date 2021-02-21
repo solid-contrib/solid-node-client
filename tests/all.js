@@ -1,6 +1,11 @@
+/*
 import * as $rdf from 'rdflib';
 import {SolidNodeClient} from '../';
 import * as libUrl from 'url'
+*/
+const $rdf = require('rdflib');
+const {SolidNodeClient} = require('../');
+const libUrl = require('url');
 
 global.$rdf = $rdf;
 const client = new SolidNodeClient();

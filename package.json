@@ -1,12 +1,16 @@
 {
   "name": "solid-node-client",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "a client for nodejs access to Solid",
-  "main": "./src/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./src/index.js",
   "scripts": {
     "test": "node tests/all",
     "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
-    "build": "tsc --esModuleInterop src/*.ts"
+    "build": "npm run build:clean && npm run build:esm && npm run build:cjs",
+    "build:clean": "rm -rf dist && mkdir dist && mkdir dist/cjs && mkdir dist/esm",
+    "build:esm": "tsc --esModuleInterop src/*.ts",
+    "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs src --out-dir dist/cjs"
   },
   "keywords": [],
   "author": "Jeff Zucker",
@@ -18,8 +22,9 @@
     "@solid-rest/file": "^2.0.4"
   },
   "devDependencies": {
-    "@inrupt/solid-client-authn-node": "^1.5.1",
-    "@solid-rest/dropbox": "^1.0.5",
+    "@babel/cli": "^7.12.10",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@inrupt/solid-client": "^1.4.0",
     "rdflib": "^2.1.7",
     "typescript": "4.1.2"
   }
