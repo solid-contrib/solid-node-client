@@ -1,135 +1,78 @@
-import
-  { getSession, getNodeSolidServerCookie, getAuthFetcher } 
-  from "solid-auth-fetcher";
-/*
-import 
-  {profile_content,prefs_content,private_content,public_content,acl_content}
-  from './createLocalPod.js';
-*/
+import {SolidRestFile} from '@solid-rest/file';
+import {NoAuthSession} from './NoAuthSession'
 import fetch from "node-fetch";
-import SolidRest from "solid-rest";
+import * as UrlObj from 'url';
 
 export class SolidNodeClient {
-  rest?:any;
-  session?:any;
   debug?:any;
-  authFetcher?:any;
+  handlers?:any;
   parser?:any;
   constructor(options:any={}){
     options = options || {};
-    this.rest = options.rest || new SolidRest(options);
-    this.session = options.session || new NodeNoAuthSession({rest:this.rest});
+    options.handlers = options.handlers || {};
+    options.handlers.http = options.handlers.http || fetch;
+    options.handlers.file = options.handlers.file || new NoAuthSession({
+      httpFetch: options.handlers.http,
+      fileHandler: new SolidRestFile() 
+    });
+    this.handlers = options.handlers;    
     this.debug = false;
     return this;
   }
   async fetch(url:string,options:any) {
-    return await this.session.fetch(url,options);
+    let protocol = new UrlObj.URL(url).protocol.replace(/:$/,'');
+    let _fetch = this.handlers[protocol] && this.handlers[protocol].session 
+               ? this.handlers[protocol].session.fetch 
+               : this.handlers.fallback && this.handlers.fallback.fetch
+               ? this.handlers.fallback.fetch
+               : this.handlers.file.session.fetch;
+    return await _fetch(url.toString(),options)
   }
-  async login(options:IloginOptions) {
-    options = options || {};
-    options.idp      = options.idp || process.env.SOLID_IDP;
-    options.username = options.username || process.env.SOLID_USERNAME;
-    options.password = options.password || process.env.SOLID_PASSWORD;
-    options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
-    let self=this;
-    return new Promise((resolve, reject) => {
-      this._getAuthFetcher( options, (session) => {
-        self.session = session;
-        resolve(session);
-      });
-    })
-  }
-  async _getAuthFetcher(options:IloginOptions,callback:Function){
-    const cookie = await getNodeSolidServerCookie(
-      options.idp, options.username, options.password
-    );
-    this.authFetcher = await getAuthFetcher(
-      options.idp, cookie, "https://solid-node-client"
-    );
-    let session = await getSession();
-    let self=this;
-    this.authFetcher.onSession( async(s) => {
-      let originalFetch = s.fetch;
-      s.fetch = (url:string,opts:any) => {
-        if( url.startsWith('http') ) return originalFetch(url,opts);
-        return self.rest.fetch(url,opts);
+  async login(credentials:any={},protocol:string="https") {
+    this.handlers.https = this.handlers.https || "";
+    if(protocol==='https' && typeof this.handlers.https === 'string'){
+      if(this.handlers.https==='solid-client-authn-node'){
+        let scan = await import('./EssAuthSession');           
+        this.handlers.https = new scan.EssAuthSession();
       }
-      s.fetch.bind(s)
-      callback(s);
-    });
-  }
-  async logout() {
-    if(this.session.loggedIn) {
-      await this.session.logout();
+      else {
+        let saf = await import('./NssAuthSession');           
+        this.handlers.https = new saf.NssAuthSession();
+      }
     }
-    this.session = new NodeNoAuthSession({rest:this.rest});
-    this.authFetcher = null;
+    const session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
+    return session;
   }
-  async currentSession(){
-    return ( this.session.loggedIn ) ? this.session : null ;
+  async getSession(protocol:string="https") {
+    const session = this.handlers[protocol] && this.handlers[protocol].session ?this.handlers[protocol].session :this.handlers.file.session;
+    return session;
+  }
+  async logout(protocol:string="https") {
+    const session = await this.getSession(protocol);    
+    if(session.info.isLoggedIn) {
+      await session.logout();
+    }
   }
   async createServerlessPod( base:string ){
-    return this.rest.createServerlessPod( base );
-  }
-/*
-  async createLocalPod( base:string ){
-    console.log(`Creating pod at <${base}>`);
-    base = base.replace(/\/$/,'');
-    await this.makeResource( base,"/.acl", acl_content );
-    await this.makeResource( base,"/profile/card", profile_content );
-    await this.makeResource( base,"/settings/prefs.ttl", prefs_content );
-    await this.makeResource(base,"/settings/privateTypeIndex.ttl",private_content );
-    await this.makeResource( base,"/settings/publicTypeIndex.ttl", public_content );
-    await this.makeResource( base,"/private/.meta", "" );
-    await this.makeResource( base,"/.well-known/.meta", "" );
-    await this.makeResource( base,"/public/.meta", "" );
-    await this.makeResource( base,"/inbox/.meta", "" );
-  }
-  async makeResource( base:string, path:string, content:string ){
-    let url = base + path
-    console.log ( "  creating " + path )
-    await this.fetch( url, {
-      method:"PUT",
-      body:content,
-      headers:{"content-type":"text/turtle"}
-    })
-  }
-*/
-}
-
-/** UNAUTHENTICATED SESSION 
- */
-class NodeNoAuthSession {
-  loggedIn: boolean;
-  rest: any;
-  constructor(options:any={}){
-    this.loggedIn=false;
-    this.rest=options.rest;
-  }
-  logout() {}
-  fetch(url:string,options:any) {
-    if( url.startsWith('http') ) return fetch(url,options)
-    return this.rest.fetch(url,options);
+    return this.handlers.fallback.createServerlessPod( base );
   }
 }
 
 /** INTERFACES
  */
-interface IloginOptions {
-  idp? : string,
-  username? : string,
-  password? : string,
-  debug? : boolean,
-  rest? : any,
-}
 interface InodeClient {
   session? : any;
-  rest? : any;
+//  rest? : any;
   debug? : any;
   authFetcher? : any;
   fetch(url:string,options:any):any;
   login(options:IloginOptions):any;
   logout():void;
 }
-
-/* END */
+  interface IloginOptions {
+    idp? : string,
+    username? : string,
+    password? : string,
+    debug? : boolean,
+//    rest? : any,
+  }

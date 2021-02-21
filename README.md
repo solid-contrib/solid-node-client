@@ -1,113 +1,150 @@
 # Solid-Node-Client                                                            
                                                                                
--- **a nodejs client for Solid** --    
+-- **Solid access to Pods, local file systems, and other backends via nodejs**
 
-This library provides access to [Solid](https://solidproject.org/) from the command line and from local scripts and apps which either run in the console or in a local browser based context like electron. It can be used to move resources back and forth between a local commputer and one or more  pods, carry out remote operations on pods, and can also treat your local file system as a serverless pod.
+## Overview
 
-Solid-Node-Client uses [solid-auth-fetcher](https://github.com/solid/solid-auth-fetcher) to provide session management and fetching for https: URLs and uses [solid-rest](https://github.com/solid/solid-rest) to provide solid-like fetches on file: and other non-http URLs.  It supports login and authenticated fetches to NSS servers.  Support for login to other servers will be added in the future.
+This library provides access to [Solid](https://solidproject.org/) from the command line and from local scripts and apps which either run in the console or in a local browser-based context like electron. It can move resources back and forth between a local commputer and one or more  Pods, carry out remote operations on Pods, and can also treat your local file system, Dropbox, and other backends as a serverless Pod.
 
-Solid-node-client can be used stand-alone, or can be used with [rdflib](https://github.com/linkeddata/rdflib.js), [solid-file-client](https://github.com/jeff-zucker/solid-file-client/), and most other Solid apps.  See [creating a serverless pod](#pod) for additional details.
+Solid-Node-Client is based on a plugin system.
 
-As of version 1.2.0, solid node client now supports multiple logins from the same script. See [below](#multiple) for details
+* **pluggable authentication** - To access private Pod data, you can plugin Inrupt's solid-client-authn-node, solid-auth-fetcher, or any other authentication packages with a similar API. See [authentication](#auth).
+
+* **pluggable backends** By default the backend may be a local server-based Pod, a remote server-based Pod, or a file system treated as a serverless Pod. Serverless Pods for Dropbox and SSH are in development.
+
+* **pluggable frontends** Solid-node-client may be used stand-alone or in conjunction with other libraries such as rdflib, solid-client, solid-logic and others. See [using alternate frontends](#frontends).
                                                                                
-## Synopsis   
-**Stand alone usage :**
+## An Example of Stand-Alone Usage
 ```javascript               
 import { SolidNodeClient } from 'solid-node-client';
 const client = new SolidNodeClient();
 
-async function main(){
-    let response = await client.fetch('https://example.com/publicResource');
+async function readFile(){
+  // fetch & display a public resource
+  let response = await client.fetch('https://example.com/publicResource');
+  console.log(await response.text());
+  // login, then fetch & display a private resource
+  let session = await client.login( getCredentials() ); // see details below
+  if( session.isLoggedIn ) {
+    console.log (`logged in as <${session.webId}>`);
+    response = await client.fetch('https://example.com/privateResource');
     console.log(await response.text())
-    let session = await client.login();
-    if( session ) {
-        console.log (`logged in as <${session.webId}>`);
-        response = await client.fetch('https://example.com/privateResource');
-        console.log(await response.text())
-        logout();
-    }    
+  }    
 }
 ``` 
-**Usage with rdflib :**
-```javascript
-import {SolidNodeClient} from 'solid-node-client';
-import * as $rdf from 'rdflib';
-const client = new SolidNodeClient();
-const store   = $rdf.graph();
-const fetcher = $rdf.fetcher(store,{fetch:client.fetch.bind(client)});  
-    // now all rdflib methods support file:// requests in nodejs
 
-async function main(){
-    let session = await login();  // may be omitted if you don't need authentication
-    // now all rdflib methods support authenticated http: requests in nodejs
-}
-```
-## Installation
-                                                                               
-**1. install the app**
+## Install
 ```                                                                            
-  npm install
+  npm install solid-node-client
 ```
 
-**2. give the app permission**                                                 
-                           
-Skip this step if you don't need authenticated access to a pod.  To get authenticated access to a pod, you will need to add "https://solid-node-client" as a trusted app on that pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this.                       
-    
-## Methods
+## <a id="auth">Authenticate and Login</a>
 
-### login(options)
+You can skip this section if all you need to do is access public materials or your local file system as a serverless Pod.
 
-Logs the user in to a Solid pod and returns an authenticated session.  Credentials for the login may be set as environment variables in your operating system or passed in the options.  
+The authentication process varies depending on the server.  Currently Solid-Node-Client supports authentication for ESS-style Pods (e.g. inrupt.com), NSS-style Pods (e.g. solidcommunity.net), and some serverless Pods (e.g. dropbox.com).
 
-If these variables are part of your environment, you can use the login() method without arguments.
+### Authentication for NSS-Style Pods
 
-  * **SOLID_IDP** // the server root e.g. https://solidcoummunity.net (no trailing slash)
-  * **SOLID_USERNAME** // your username on the server
-  * **SOLID_PASSWORD** // your password on the server
-  * **SOLID_DEBUG** // set this if you want to output extended login and session debugging
+1. Preparation : add "https://solid-node-client" as a trusted app on that Pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this. 
 
-If you don't have those environment variables set or if you wish to override them, you can set them in the arguments to login().
+2. In each script :
+```javascript               
+  import { SolidNodeClient } from 'solid-node-client';
+  const client = new SolidNodeClient();
+  await client.login({
+    idp : "YOUR_IDENTITY_PROVIDER", // e.g. https://solidcommunity.net
+    username : "YOUR_USERNAME",
+    password : "YOUR_PASSWORD",
+  });
+  // you can now do authenticated reading & writing
+```
+
+### Authentication for ESS-Style Pods
+
+1. Preparation : obtain a token from the server by following these steps
+```
+  a. Change into the folder where you installed Solid-Node-Client
+  b. Run this command: npm run getToken
+  c. A script will run in your console, answer its prompts
+  d. The script will show a URL, go there in a browser
+  e. In the browser, login to your Pod provider and authorize yourself
+  f. A JSON snippet with a token and related fields will show in your console
+  g. Save the JSON snippet or use directly (see step #2 below)
+```
+**Note:** Currently inrupt.com's token expires after about three days, so this process will need to be repeated.  A longer token may be possible in the future. The app permission sequence above uses https://github.com/inrupt/generate-oidc-token, see its documentation for further details.
+
+2. In each script :
+You can now use the token and other information from step #1 to login.
+```javascript               
+  import { SolidNodeClient } from 'solid-node-client';
+  const client = new SolidNodeClient({
+    handlers : { https : 'solid-client-authn-node' }  // MUST specify this
+  });
+  await client.login({
+    clientId: "YOUR_CLIENT_ID",
+    clientSecret: "YOUR_CLIENT_SECRET",
+    refreshToken: "YOUR_REFRESH_TOKEN",
+    oidcIssuer: "YOUR_IDENTITY_PROVIDER" // e.g. https://broker.pod.inrumpt.com
+  });
+  // you can now do authenticated reading & writing
+```
+
+## Using Sessions : login(), getSession()
+
+A session object is returned from both the login() and getSession() methods.  The object will depend on your login status.  If login() was successful, then the session.isLoggedIn will be true and the session.webId will be the URL of your webId., otherwise session.isLoggedIn will be false and session.webId will be undefined.
 ```javascript
-   let session = await client.login({
-       idp : "https://yourIdentityProvider",
-       username : "yourUsername",
-       password : "yourPassword",
-       debug : true // or false
-   });
+  // login in and read your profile
+  let session = await client.login( ... );
+  if( session.isLoggedIn ) { await client.fetch(session.webId); ... }
+  // or 
+  await client.login( ... );
+  // ...
+  let session = client.getSession();
+  if( session.isLoggedIn ) { await client.fetch(session.webId); ... }
 ```
-The session object returned will be a solid-auth-fetcher Session object which has properties loggedIn and webId.  See the solid-auth-fetcher docs for further details if you need them.
+The session object is the underlying object of the authentication package you are using, i.e. either a solid-auth-fetcher Session object (the default), or a solid-client-authn-node Session object.  See the documentation for those packages to see what you can do with this object.
 
-### logout()
+## Read and Write : fetch()
 
-Logs the user out.  This means that authenticated fetches are no longer possible but you can still use unauthenticated fetches.
+This method performs CRUD operations as specified in the [Solid REST spec](https://github.com/solid/solid-spec).  
 
-### fetch()
+Fetch can be used for public and local file system resources at any time and for services requiring authentciation after login.
 
-This method performs CRUD operations as specified in the [Solid REST spec](https://github.com/solid/solid-spec).  When used with file: URLs, most of the REST spec is followed and, as with http: URLs, the return value is a Response object containing fields such status and statusText and methods such as text(), json(), and headers.get().  See the [solid-rest docs](https://github.com/solid/solid-rest) for details of how file: URLs are handled.
+When used with serverless Pods, most of the REST spec is followed and, as with https: URLs, the return value is a Response object containing fields such status and statusText and methods such as text(), json(), and headers.get().  See the [solid-rest docs](https://github.com/solid/solid-rest) for details of how file: URLs are handled.
 
 Here's an example :
 ```javascript
 // write a resource
-let writeResponse = await client.fetch( 'https://example.com/file.text', {
+let writeResponse = await client.fetch( 'https://example.com/file.txt', {
   method : "PUT",
   body : "some content to go in the resource",
   headers : { "Content-type" : 'text/plain' }
 }
 console.log( writeResponse.status  );  // 201
 // now read it
-let readResponse = await client.fetch( 'https://example.com/file.text' );
+let readResponse = await client.fetch( 'https://example.com/file.txt' );
 // display its contents
 console.log( await readResponse.text()  );
 ```
 
-### Note about Patch
+## logout()
 
-PATCH is supported by solid-node-client, but *only* if your script imports rdflib and you set the parser option for new SolidNodeClient().  The syntax for PATCH is the same as in rdflib.
+Logs the user out.  This means that authenticated fetches are no longer possible but you can still use unauthenticated fetches.  If no protocol parameters are used, https is assummed.
+```javascript
+   await client.logout()          // log out from an https Pod server
+   await client.logout('dropbox') // log out of Dropbox account
+```
 
+
+## Note about Patch
+
+PATCH is supported by default on server-based Pods.  For serverless Pods your script needs to import rdflib and set a global $rdf variable *before* creating the client, like this :
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
 import * as $rdf from 'rdflib';
-const client = new SolidNodeClient({parser:$rdf});
+global.$rdf = $rdf;
+const client = new SolidNodeClient();
 // client.fetch() now supports PATCH on file: URLs and all solid-rest backends
 ```
 
@@ -125,28 +162,53 @@ It is now possible to login multiple times from the same script.  You can create
   //     client_3 is unauthenticated
 }
 ```
+One **caveat** is that  curreently you may not have both a solid-auth-fetcher client and a solid-client-authn-node client in the same process.  This will hopefuly change in the future.
 
-## Working with underlying session objects
+## <a name="Pod">Creating a serverless Pod</a>
 
-The solid-auth-fetcher session and authFetcher objects are available for each client.  See the solid-auth-fetcher docs for details :
-```javascript
-  if( client.session.loggedIn() ...
-  let authFetcher = client.authFetcher ...  
-```
+Solid-Node-Client, when using solid-rest-* plugins for file: and other protocls, can treat the backend as a serverless Pod. This means that requests to the backend will respond the way a Pod does - reading a directory returns a turtle representation of the directory, writing a file creates its parent directories if they don't exist, headers are sent for wac-allow, content-type, etc.  This all means that core Solid libraries and apps such as rdlib, mashlib, the databrowser can address the serverless Pod the same way they would a server-based Pod.  The one exception is ACL files.  These are returned in link headers and read and written as on a server-based Pod.  However, they do not control access to resources, that is done with file system checks (e.g. *nix read/write permissions).
 
-## <a name="pod">Creating a serverless pod</a>
-
-Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote pod, but the easiest thing to do is use the built-in createServerlessPod method.
+Solid Node Client can access the local file system using file:// URLs without using a server.  In most respects, it will treat the file system as a Pod.  To get the full benefit of this, it's best to create some local files such as a profile, a preferences file, and type indexes. You can create them manually or copy them from a remote Pod, but the easiest thing to do is use the built-in createServerlessPod method.
 ```javascript
 import {SolidNodeClient} from 'solid-node-client';
 const client = new SolidNodeClient();
 client.createServerlessPod('file:///home/jeff/myPod/');
 ```
-The code above will create a profile, preferences and other key pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
+The code above will create a profile, preferences and other key Pod resources in the named folder. Your profile will be located at '/home/jeff/myPod/profile/card' and your preferences file will be located at '/home/jeff/myPod/settings/prefs.ttl'.  You can now use a file:// URL to refer to your local webId: <file:///home/jeff/myPod/profile/card#me>.  As with a server-based Pod, this webId is the starting point for any app that wants to follow its nose through your local file system.
+
+## Using Solid-Node-Client with other Libraries
+
+### Using with rdflib
+To use Solid-Node-Client with rdflib, just import it and bind its fetch to rdflib's fetcher as shown below.  Do that once at the top of your script and thereafter all fetches from rdflib methods such as load, putBack, webOperations, updateManager, etc. can be used against any Solid-Node-Client backends.  If you also login, you can use it to access private resources on remote Pods.
+```javascript
+/* Use Solid-Node-Client and rdflib to read the contents of a local folder 
+*/
+import {SolidNodeClient} from '../';
+import * as $rdf from 'rdflib';
+
+const client = new SolidNodeClient();
+const store = $rdf.graph();
+const fetcher = $rdf.fetcher(store,{fetch:client.fetch.bind(client)});
+
+const localFolder = $rdf.sym(`file://${process.cwd()}/`);
+const contains = $rdf.sym(`http://www.w3.org/ns/ldp#contains`);
+
+async function main(){
+  await fetcher.load( localFolder );  // unauthenticated local fetch
+  store.match( folder, contains ).filter( (stmt)=>{
+    console.log( stmt.object.value )
+  });
+  let session = await client.login( myLoginProfile );
+  if( session.isLoggedIn ) {
+    await fetcher.load( somePrivateURL ); // authenticated fetch
+  }
+}
+main();
+```
 
 ## Acknowledgements
 
-All of the session management is from Jackson Creed's solid-auth-fetcher.  The login is from Michiel de Jong's solid-crud-tests.
+Many thanks to Michiel de Jong, Alain Bourgeois, CxRes, Otto_A_A for their contributions.
 
 ## Copyright and License
 
