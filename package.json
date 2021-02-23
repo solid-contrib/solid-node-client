@@ -19,8 +19,7 @@
     "@inrupt/generate-oidc-token": "^0.1.0",
     "@inrupt/solid-client-authn-node": "^1.5.1",
     "@solid-rest/file": "^2.0.6",
-    "solid-auth-fetcher": "^1.5.1",
-    "solid-file-client": "^1.2.3"
+    "solid-auth-fetcher": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
