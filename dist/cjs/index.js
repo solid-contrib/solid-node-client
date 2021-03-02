@@ -218,7 +218,7 @@ function () {
         switch (_a.label) {
           case 0:
             protocol = new UrlObj.URL(url).protocol.replace(/:$/, '');
-            _fetch = this.handlers[protocol] && this.handlers[protocol].session ? this.handlers[protocol].session.fetch : this.handlers.fallback && this.handlers.fallback.fetch ? this.handlers.fallback.fetch : this.handlers.file.session.fetch;
+            _fetch = this.handlers[protocol] && this.handlers[protocol].session ? this.handlers[protocol].session.fetch : this.handlers.file.session.fetch;
             return [4
             /*yield*/
             , _fetch(url.toString(), options)];
@@ -363,9 +363,17 @@ function () {
   SolidNodeClient.prototype.createServerlessPod = function (base) {
     return __awaiter(this, void 0, void 0, function () {
       return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.handlers.fallback.createServerlessPod(base)];
+        switch (_a.label) {
+          case 0:
+            return [4
+            /*yield*/
+            , this.handlers.file.createServerlessPod(base)];
+
+          case 1:
+            return [2
+            /*return*/
+            , _a.sent()];
+        }
       });
     });
   };

@@ -23,8 +23,6 @@ export class SolidNodeClient {
     let protocol = new UrlObj.URL(url).protocol.replace(/:$/,'');
     let _fetch = this.handlers[protocol] && this.handlers[protocol].session 
                ? this.handlers[protocol].session.fetch 
-               : this.handlers.fallback && this.handlers.fallback.fetch
-               ? this.handlers.fallback.fetch
                : this.handlers.file.session.fetch;
     return await _fetch(url.toString(),options)
   }
@@ -54,7 +52,7 @@ export class SolidNodeClient {
     }
   }
   async createServerlessPod( base:string ){
-    return this.handlers.fallback.createServerlessPod( base );
+    return await this.handlers.file.createServerlessPod( base );
   }
 }
 

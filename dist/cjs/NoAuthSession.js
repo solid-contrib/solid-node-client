@@ -13,6 +13,9 @@ function () {
       options = {};
     }
 
+    this.fileHandler = options.fileHandler;
+    this.httpFetch = options.httpFetch;
+    this.createServerlessPod = this.fileHandler.createServerlessPod.bind(this.fileHandler);
     this.session = {
       isLoggedIn: false,
       info: {
@@ -21,8 +24,6 @@ function () {
       fetch: this._fetch.bind(this),
       logout: function () {}
     };
-    this.fileHandler = options.fileHandler;
-    this.httpFetch = options.httpFetch;
   }
 
   NoAuthSession.prototype._fetch = function (url, options) {

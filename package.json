@@ -1,15 +1,15 @@
 {
   "name": "solid-node-client",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "a client for nodejs access to Solid",
   "main": "./dist/cjs/index.js",
-  "module": "./src/index.js",
+  "module": "./dist/esm/index.js",
   "scripts": {
     "test": "node tests/all",
     "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
     "build": "npm run build:clean && npm run build:esm && npm run build:cjs",
     "build:clean": "rm -rf dist && mkdir dist && mkdir dist/cjs && mkdir dist/esm",
-    "build:esm": "tsc --esModuleInterop src/*.ts",
+    "build:esm": "tsc --esModuleInterop --outDir dist/esm src/*.ts",
     "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs src --out-dir dist/cjs"
   },
   "keywords": [],
@@ -18,7 +18,7 @@
   "dependencies": {
     "@inrupt/generate-oidc-token": "^0.1.0",
     "@inrupt/solid-client-authn-node": "^1.5.1",
-    "@solid-rest/file": "^2.0.6",
+    "@solid-rest/file": "^2.0.7",
     "solid-auth-fetcher": "^1.5.1"
   },
   "devDependencies": {
