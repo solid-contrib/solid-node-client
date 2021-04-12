@@ -38,7 +38,8 @@ export class SolidNodeClient {
         this.handlers.https = new saf.NssAuthSession();
       }
     }
-    const session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
+    let session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
+    session ||= this.handlers.file.session;
     return session;
   }
   async getSession(protocol:string="https") {

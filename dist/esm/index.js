@@ -125,6 +125,7 @@ var SolidNodeClient = /** @class */ (function () {
                         _b.label = 7;
                     case 7:
                         session = _a;
+                        session || (session = this.handlers.file.session);
                         return [2 /*return*/, session];
                 }
             });

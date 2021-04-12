@@ -1,16 +1,16 @@
 {
   "name": "solid-node-client",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "a client for nodejs access to Solid",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "scripts": {
     "test": "node tests/all",
     "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
     "build": "npm run build:clean && npm run build:esm && npm run build:cjs",
     "build:clean": "rm -rf dist && mkdir dist && mkdir dist/cjs && mkdir dist/esm",
     "build:esm": "tsc --esModuleInterop --outDir dist/esm src/*.ts",
-    "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs src --out-dir dist/cjs"
+    "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs dist/esm -d dist/cjs"
   },
   "keywords": [],
   "author": "Jeff Zucker",

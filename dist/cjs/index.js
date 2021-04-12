@@ -299,6 +299,7 @@ function () {
 
           case 7:
             session = _a;
+            session || (session = this.handlers.file.session);
             return [2
             /*return*/
             , session];
