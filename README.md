@@ -61,18 +61,21 @@ The authentication process varies depending on the server.  Currently Solid-Node
 ```
 
 ### Authentication for ESS-Style Pods
-
-1. Preparation : obtain a token from the server by following these steps
+1. Install the Inrupt apps
 ```
-  a. Change into the folder where you installed Solid-Node-Client
-  b. Run this command: npm run getToken
-  c. A script will run in your console, answer its prompts
-  d. The script will show a URL, go there in a browser
-  e. In the browser, login to your Pod provider and authorize yourself
-  f. A JSON snippet with a token and related fields will show in your console
-  g. Save the JSON snippet or use directly (see step #2 below)
+  a. Install @inrupt/generate-oidc-token npm i --save 
+  b. Install @inrupt/solid-client-authn-node with npm i --save 
 ```
-**Note:** Currently inrupt.com's token expires after about three days, so this process will need to be repeated.  A longer token may be possible in the future. The app permission sequence above uses https://github.com/inrupt/generate-oidc-token, see its documentation for further details.
+2. Preparation : obtain a token from the server by following these steps
+```
+  a. Run @inrupt/generate-oidc-token
+  b. A script will run in your console, answer its prompts
+  c. The script will show a URL, go there in a browser
+  d. In the browser, login to your Pod provider and authorize yourself
+  e. A JSON snippet with a token and related fields will show in your console
+  f. Save the JSON snippet or use directly in login (see step #2 below)
+```
+**Note:** See https://github.com/inrupt/generate-oidc-token, for documentation of the OIDC token
 
 2. In each script :
 You can now use the token and other information from step #1 to login.
