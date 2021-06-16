@@ -1,17 +1,20 @@
 /** UNAUTHENTICATED SESSION 
  */
+import { IAuthSession, ISession } from './IAuthSession';
 
-export class NoAuthSession {
-  session:any
+export class NoAuthSession implements IAuthSession {
+
+  session:ISession;
   fileHandler: any;
   httpFetch: any;
   createServerlessPod:any;
-  constructor(options:any={}){
-    this.fileHandler=options.fileHandler;
+
+  constructor(options:INoAuthOptions={}){
+    this.fileHandler = options.fileHandler;
     this.httpFetch = options.httpFetch;
-    this.createServerlessPod = this.fileHandler.createServerlessPod.bind(this.fileHandler);
+    this.createServerlessPod = this.fileHandler?.createServerlessPod.bind(this.fileHandler);
     this.session = {
-      isLoggedIn:false,
+      isLoggedIn: false,
       info : { isLoggedIn:false },
       fetch : this._fetch.bind(this),
       logout : ()=>{},
@@ -21,6 +24,14 @@ export class NoAuthSession {
     if( url.startsWith('file') ) return this.fileHandler.fetch(url,options);
     else return this.httpFetch(url,options)
   }
+  
+}
+
+/* INTERFACES */
+
+interface INoAuthOptions {
+	fileHandler?: any,
+	httpFetch?: any
 }
 
 

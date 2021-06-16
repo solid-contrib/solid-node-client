@@ -3,14 +3,15 @@
 
 import { getSession, getNodeSolidServerCookie, getAuthFetcher } 
  from "solid-auth-fetcher";
+import { ILoginOptions } from ".";
+import { IAuthSession, INssSession } from "./IAuthSession";
 
-export class NssAuthSession {
+export class NssAuthSession implements IAuthSession {
 
-  session:any
+  session:INssSession
   authFetcher:any
 
-  async login(options:IloginOptions) {
-    options = options || {};
+  async login(options:ILoginOptions = {}) {
     options.idp      = options.idp || process.env.SOLID_IDP || "";
     options.username = options.username || process.env.SOLID_USERNAME;
     options.password = options.password || process.env.SOLID_PASSWORD;
@@ -24,7 +25,7 @@ export class NssAuthSession {
     })
   }
 
-  async _getAuthFetcher(options:IloginOptions,callback:Function){
+  async _getAuthFetcher(options:ILoginOptions,callback:Function){
     let cookie;
     try {
       cookie = await getNodeSolidServerCookie(
@@ -43,7 +44,7 @@ export class NssAuthSession {
       options.idp, cookie, "https://solid-node-client"
     );
     let session = await getSession();
-    this.authFetcher.onSession( async(s) => {
+    this.authFetcher.onSession( async(s: INssSession) => {
       s.info = {};
       s.info.isLoggedIn = s.isLoggedIn = s.loggedIn;
       s.info.webId = s.webId
@@ -52,12 +53,5 @@ export class NssAuthSession {
     });
   }
 }
-  interface IloginOptions {
-    idp? : string,
-    username? : string,
-    password? : string,
-    debug? : boolean,
-  }
-
 
 // ENDS

@@ -1,8 +1,11 @@
 import { Session } from "@inrupt/solid-client-authn-node";
+import { IAuthSession, IEssSession } from "./IAuthSession";
 
-export class EssAuthSession {
-  session:any
-  async login(options:any) {
+export class EssAuthSession implements IAuthSession {
+  
+	session:IEssSession;
+
+  async login(options:IEssLoginOptions) {
     const sess = new Session();
     await sess.login({
       clientId: options.clientId,
@@ -16,5 +19,13 @@ export class EssAuthSession {
     return this.session;
   }
 }
-// ENDS
+
+/* INTERFACES */
+
+interface IEssLoginOptions {
+	clientId?:string;
+	clientSecret?:string;
+	refreshToken?:string;
+	oidcIssuer?:string;
+}
 
