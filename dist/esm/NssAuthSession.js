@@ -44,11 +44,11 @@ var NssAuthSession = /** @class */ (function () {
     function NssAuthSession() {
     }
     NssAuthSession.prototype.login = function (options) {
+        if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var self;
             var _this = this;
             return __generator(this, function (_a) {
-                options = options || {};
                 options.idp = options.idp || process.env.SOLID_IDP || "";
                 options.username = options.username || process.env.SOLID_USERNAME;
                 options.password = options.password || process.env.SOLID_PASSWORD;

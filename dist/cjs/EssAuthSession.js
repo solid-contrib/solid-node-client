@@ -184,4 +184,4 @@ function () {
   return EssAuthSession;
 }();
 
-exports.EssAuthSession = EssAuthSession; // ENDS
+exports.EssAuthSession = EssAuthSession;

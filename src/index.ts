@@ -11,7 +11,7 @@ export class SolidNodeClient {
   parser?:any;
 
   constructor(options:IClientOptions={}){
-    options.handlers ?? {};
+    options.handlers = options.handlers || {};
     options.handlers.http = options.handlers.http || fetch;
     options.handlers.file = options.handlers.file || new NoAuthSession({
       httpFetch: options.handlers.http,
@@ -81,7 +81,7 @@ export interface ILoginOptions {
 
 interface IClientOptions {
 	handlers?: {
-		http: any,
-		file: NoAuthSession | any
+		http?: any,
+		file?: NoAuthSession | any
 	};
 }
