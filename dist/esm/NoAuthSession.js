@@ -1,14 +1,13 @@
 "use strict";
-/** UNAUTHENTICATED SESSION
- */
 exports.__esModule = true;
 exports.NoAuthSession = void 0;
 var NoAuthSession = /** @class */ (function () {
     function NoAuthSession(options) {
         if (options === void 0) { options = {}; }
+        var _a;
         this.fileHandler = options.fileHandler;
         this.httpFetch = options.httpFetch;
-        this.createServerlessPod = this.fileHandler.createServerlessPod.bind(this.fileHandler);
+        this.createServerlessPod = (_a = this.fileHandler) === null || _a === void 0 ? void 0 : _a.createServerlessPod.bind(this.fileHandler);
         this.session = {
             isLoggedIn: false,
             info: { isLoggedIn: false },

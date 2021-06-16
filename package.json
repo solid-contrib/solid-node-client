@@ -9,7 +9,7 @@
     "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
     "build": "npm run build:clean && npm run build:esm && npm run build:cjs",
     "build:clean": "rm -rf dist && mkdir dist && mkdir dist/cjs && mkdir dist/esm",
-    "build:esm": "tsc --esModuleInterop --outDir dist/esm src/*.ts",
+    "build:esm": "tsc --esModuleInterop --declaration --outDir dist/esm src/*.ts",
     "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs dist/esm -d dist/cjs"
   },
   "keywords": [],

@@ -2,13 +2,15 @@ import {SolidRestFile} from '@solid-rest/file';
 import {NoAuthSession} from './NoAuthSession'
 import fetch from "node-fetch";
 import * as UrlObj from 'url';
+import { IAuthSession, ISession } from './IAuthSession';
 
 export class SolidNodeClient {
+
   debug?:any;
   handlers?:any;
   parser?:any;
-  constructor(options:any={}){
-    options = options || {};
+
+  constructor(options:IClientOptions={}){
     options.handlers = options.handlers || {};
     options.handlers.http = options.handlers.http || fetch;
     options.handlers.file = options.handlers.file || new NoAuthSession({
@@ -26,7 +28,7 @@ export class SolidNodeClient {
                : this.handlers.file.session.fetch;
     return await _fetch(url.toString(),options)
   }
-  async login(credentials:any={},protocol:string="https") {
+  async login(credentials:any={},protocol:string="https") : Promise<IAuthSession> {
     this.handlers.https = this.handlers.https || "";
     if(protocol==='https' && typeof this.handlers.https === 'string'){
       if(this.handlers.https==='solid-client-authn-node'){
@@ -42,17 +44,17 @@ export class SolidNodeClient {
     session ||= this.handlers.file.session;
     return session;
   }
-  async getSession(protocol:string="https") {
+  async getSession(protocol:string="https") : Promise<ISession> {
     const session = this.handlers[protocol] && this.handlers[protocol].session ?this.handlers[protocol].session :this.handlers.file.session;
     return session;
   }
-  async logout(protocol:string="https") {
+  async logout(protocol:string="https") : Promise<void> {
     const session = await this.getSession(protocol);    
     if(session.info.isLoggedIn) {
       await session.logout();
     }
   }
-  async createServerlessPod( base:string ){
+  async createServerlessPod( base:string ) : Promise<any> {
     return await this.handlers.file.createServerlessPod( base );
   }
 }
@@ -65,13 +67,21 @@ interface InodeClient {
   debug? : any;
   authFetcher? : any;
   fetch(url:string,options:any):any;
-  login(options:IloginOptions):any;
+  login(options:ILoginOptions):any;
   logout():void;
 }
-  interface IloginOptions {
+  
+export interface ILoginOptions {
     idp? : string,
     username? : string,
     password? : string,
     debug? : boolean,
 //    rest? : any,
-  }
+}
+
+interface IClientOptions {
+	handlers?: {
+		http?: any,
+		file?: NoAuthSession | any
+	};
+}

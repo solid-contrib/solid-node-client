@@ -66,7 +66,6 @@ var UrlObj = __importStar(require("url"));
 var SolidNodeClient = /** @class */ (function () {
     function SolidNodeClient(options) {
         if (options === void 0) { options = {}; }
-        options = options || {};
         options.handlers = options.handlers || {};
         options.handlers.http = options.handlers.http || node_fetch_1["default"];
         options.handlers.file = options.handlers.file || new NoAuthSession_1.NoAuthSession({
