@@ -8,7 +8,6 @@ export interface ISession {
 	isLoggedIn: boolean,
 	info : { 
 		isLoggedIn?: boolean,
-		isNss?: boolean,
 		webId?: string
 	},
 	fetch : (url: RequestInfo, init?: RequestInit) => Promise<Response>,
@@ -17,10 +16,12 @@ export interface ISession {
 
 export interface IEssSession extends Session {
 	isLoggedIn?: boolean,
-	webId?: string
+	webId?: string,
+	WebID?: string
 }
 
 export interface INssSession extends ISession {
 	loggedIn?: boolean,
-	webId?: string
+	webId?: string,
+	WebID?: string
 }

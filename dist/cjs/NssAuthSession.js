@@ -236,8 +236,7 @@ function () {
                 return __generator(this, function (_a) {
                   s.info = {};
                   s.info.isLoggedIn = s.isLoggedIn = s.loggedIn;
-                  s.info.webId = s.webId;
-                  s.info.isNss = true;
+                  s.info.webId = s.WebID = s.webId;
                   callback(s);
                   return [2
                   /*return*/

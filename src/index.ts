@@ -1,8 +1,13 @@
-import {SolidRestFile} from '@solid-rest/file';
+import { IAuthSession, ISession } from './IAuthSession';
 import {NoAuthSession} from './NoAuthSession'
+//
+// TBD rename NssAuth -> UserAuth; EssAuth -> TokenAuth
+//
+import {NssAuthSession} from './NssAuthSession'
+import {EssAuthSession} from './EssAuthSession'
+import {SolidRestFile} from '@solid-rest/file';
 import fetch from "node-fetch";
 import * as UrlObj from 'url';
-import { IAuthSession, ISession } from './IAuthSession';
 
 export class SolidNodeClient {
 
@@ -17,6 +22,7 @@ export class SolidNodeClient {
       httpFetch: options.handlers.http,
       fileHandler: new SolidRestFile() 
     });
+    if(options.handlers.https) this.handlers.userHttps=options.handlers.https;
     this.handlers = options.handlers;    
     this.debug = false;
     return this;
@@ -29,16 +35,14 @@ export class SolidNodeClient {
     return await _fetch(url.toString(),options)
   }
   async login(credentials:any={},protocol:string="https") : Promise<IAuthSession> {
-    this.handlers.https = this.handlers.https || "";
-    if(protocol==='https' && typeof this.handlers.https === 'string'){
-      if(this.handlers.https==='solid-client-authn-node'){
-        let scan = await import('./EssAuthSession');           
-        this.handlers.https = new scan.EssAuthSession();
-      }
-      else {
-        let saf = await import('./NssAuthSession');           
-        this.handlers.https = new saf.NssAuthSession();
-      }
+    if(this.handlers.userHttps ) {
+      this.handlers.https = this.handlers.userHttps;
+    }
+    else if(credentials.username && credentials.password && credentials.idp){
+      this.handlers.https = new NssAuthSession();
+    }
+    else {
+      this.handlers.https = new EssAuthSession();
     }
     let session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
     session ||= this.handlers.file.session;
@@ -81,6 +85,7 @@ export interface ILoginOptions {
 
 interface IClientOptions {
 	handlers?: {
+		https?: any,
 		http?: any,
 		file?: NoAuthSession | any
 	};

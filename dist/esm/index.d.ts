@@ -1,5 +1,5 @@
-import { NoAuthSession } from './NoAuthSession';
 import { IAuthSession, ISession } from './IAuthSession';
+import { NoAuthSession } from './NoAuthSession';
 export declare class SolidNodeClient {
     debug?: any;
     handlers?: any;
@@ -19,6 +19,7 @@ export interface ILoginOptions {
 }
 interface IClientOptions {
     handlers?: {
+        https?: any;
         http?: any;
         file?: NoAuthSession | any;
     };

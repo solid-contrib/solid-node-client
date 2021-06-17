@@ -161,10 +161,10 @@ function () {
             return [4
             /*yield*/
             , sess.login({
-              clientId: options.clientId,
-              clientSecret: options.clientSecret,
-              refreshToken: options.refreshToken,
-              oidcIssuer: options.oidcIssuer
+              clientId: options.clientId || process.env.SOLID_CLIENT_ID,
+              clientSecret: options.clientSecret || process.env.SOLID_CLIENT_SECRET,
+              refreshToken: options.refreshToken || process.env.SOLID_REFRESH_TOKEN,
+              oidcIssuer: options.oidcIssuer || process.env.SOLID_OIDC_ISSUER
             })];
 
           case 1:
@@ -172,7 +172,7 @@ function () {
 
             this.session = sess;
             this.session.isLoggedIn = sess.info.isLoggedIn;
-            this.session.webId = sess.info.webId;
+            this.session.webId = this.session.WebID = sess.info.webId;
             return [2
             /*return*/
             , this.session];
