@@ -112,7 +112,7 @@ Or
   SOLID_CLIENT_ID
   SOLID_CLIENT_SECRET
   SOLID_OIDC_ISSUER
-
+```
 **CAUTION** Storing these in the environment long-term is a security risk because, if found, they provide access to your private data.
 
 
