@@ -35,6 +35,11 @@ export class SolidNodeClient {
     return await _fetch(url.toString(),options)
   }
   async login(credentials:any={},protocol:string="https") : Promise<IAuthSession> {
+    if(!Object.keys(credentials).length){
+      credentials.idp = process.env.SOLID_IDP;
+      credentials.username = process.env.SOLID_USERNAME;
+      credentials.password = process.env.SOLID_PASSWORD;
+    }
     if(this.handlers.userHttps ) {
       this.handlers.https = this.handlers.userHttps;
     }

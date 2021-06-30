@@ -107,6 +107,11 @@ var SolidNodeClient = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        if (!Object.keys(credentials).length) {
+                            credentials.idp = process.env.SOLID_IDP;
+                            credentials.username = process.env.SOLID_USERNAME;
+                            credentials.password = process.env.SOLID_PASSWORD;
+                        }
                         if (this.handlers.userHttps) {
                             this.handlers.https = this.handlers.userHttps;
                         }
