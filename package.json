@@ -4,6 +4,10 @@
   "description": "a client for nodejs access to Solid",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "engines": {
+    "node": ">=12"
+  },
+  "engine-strict": true,
   "scripts": {
     "test": "node tests/all",
     "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
