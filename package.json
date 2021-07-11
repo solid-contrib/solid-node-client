@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "2.0.11",
+  "version": "2.1.0",
   "description": "a client for nodejs access to Solid",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@inrupt/solid-client-authn-node": "^1.9.1",
-    "@solid-rest/file": "^2.0.21",
+    "@solid-rest/file": "^2.1.0",
     "solid-auth-fetcher": "^1.5.3"
   },
   "devDependencies": {
