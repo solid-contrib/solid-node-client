@@ -36,15 +36,16 @@ async function getConfig(scheme){
    let session = await client.login()
    let webId = session.WebID
    if(! webId ) throw "Couldn't login!"
-    host   = webId.replace("/profile/card#me",'')
-    scheme = webId.replace("/profile/card#me",'')+"/public"
+   console.log(webId);
+   host   = webId.replace("/profile/card#me",'')
+   scheme = webId.replace("/profile/card#me",'')+"/public"
   }
   host = host || scheme;
 
   /*
    * we assume that test-folder exists and is empty
   */
-  let  base   = scheme + "/test-folder"
+  let  base   = scheme + "/test-folder5"
   let  c1name = "rest/"
   let  c2name = "deep-folder"
   let  r1name = "test1.ttl"
@@ -211,7 +212,7 @@ if(check.headers){
 
 
   res = await postFolder( cfg.missingFolderPost,cfg.c2name )
-  ok( "201 post container, parent not found", res.status==201,res)
+  ok( "404 post container, parent not found", res.status==404,res)
 
   res = await postFile( cfg.folder1,cfg.r1name,cfg.text )
   ok( "201 post resource", res.status==201,res)
@@ -247,7 +248,7 @@ if(check.headers){
 //  slug = cfg.folder1 + slug;
 
   res = await postFile( cfg.missingFolderPost, cfg.r1name )
-  ok( "201 post resource, parent not found", res.status==201,res)
+  ok( "404 post resource, parent not found", res.status==404,res)
 
   // PUT
 
