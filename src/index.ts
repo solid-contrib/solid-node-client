@@ -14,6 +14,7 @@ export class SolidNodeClient {
   debug?:any;
   handlers?:any;
   parser?:any;
+  appUrl:string;
 
   constructor(options:IClientOptions={}){
     options.handlers = options.handlers || {};
@@ -22,7 +23,9 @@ export class SolidNodeClient {
       httpFetch: options.handlers.http,
       fileHandler: new SolidRestFile() 
     });
+    options.appUrl = options.appUrl || "https://solid-node-client";
     if(options.handlers.https) this.handlers.userHttps=options.handlers.https;
+    this.appUrl = options.appUrl;
     this.handlers = options.handlers;    
     this.debug = false;
     return this;
@@ -49,7 +52,7 @@ export class SolidNodeClient {
     else {
       this.handlers.https = new EssAuthSession();
     }
-    let session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials) :this.handlers.file.session;
+    let session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials, this.appUrl) :this.handlers.file.session;
     session ||= this.handlers.file.session;
     return session;
   }
@@ -94,4 +97,5 @@ interface IClientOptions {
 		http?: any,
 		file?: NoAuthSession | any
 	};
+	appUrl?: string;
 }
