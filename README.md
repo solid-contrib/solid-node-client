@@ -45,12 +45,14 @@ Solid-Node-Client supports two types of logins : username/password, and JSON tok
 
 The username/password method only works on an Node Solid Server([NSS]()) (such as solidcommunity.net). It is insecure because it sends the password un-encrypted.  However, it's simpler to use and works well for testing and never requires manually requesting a new token as the JSON token method does.  
 
-1. Preparation : add "https://solid-node-client" as a trusted app on that Pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this. 
+1. Preparation : add "https://solid-node-client" (or whatever you put as `appUrl` in below) as a trusted app on that Pod or the portion of it you want to access. See [how to make an app trusted](https://github.com/solid/userguide#manage-your-trusted-applications) for how to do this. 
 
 2. In each script :
 ```javascript               
   import { SolidNodeClient } from 'solid-node-client';
-  const client = new SolidNodeClient();
+  const client = new SolidNodeClient({
+    appUrl : "https://solid-node-client", // Optional, to set your custom app URL
+  });
   await client.login({
     idp : "YOUR_IDENTITY_PROVIDER", // e.g. https://solidcommunity.net
     username : "YOUR_USERNAME",

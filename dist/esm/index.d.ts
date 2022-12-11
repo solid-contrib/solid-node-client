@@ -4,6 +4,7 @@ export declare class SolidNodeClient {
     debug?: any;
     handlers?: any;
     parser?: any;
+    appUrl: string;
     constructor(options?: IClientOptions);
     fetch(url: string, options: any): Promise<any>;
     login(credentials?: any, protocol?: string): Promise<IAuthSession>;
@@ -23,5 +24,6 @@ interface IClientOptions {
         http?: any;
         file?: NoAuthSession | any;
     };
+    appUrl?: string;
 }
 export {};
