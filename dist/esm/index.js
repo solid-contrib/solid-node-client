@@ -58,9 +58,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SolidNodeClient = void 0;
 var NoAuthSession_1 = require("./NoAuthSession");
@@ -70,13 +67,13 @@ var NoAuthSession_1 = require("./NoAuthSession");
 var NssAuthSession_1 = require("./NssAuthSession");
 var EssAuthSession_1 = require("./EssAuthSession");
 var file_1 = require("@solid-rest/file");
-var node_fetch_1 = __importDefault(require("node-fetch"));
+//import fetch from "node-fetch";
 var UrlObj = __importStar(require("url"));
 var SolidNodeClient = /** @class */ (function () {
     function SolidNodeClient(options) {
         if (options === void 0) { options = {}; }
         options.handlers = options.handlers || {};
-        options.handlers.http = options.handlers.http || node_fetch_1.default;
+        options.handlers.http = options.handlers.http || fetch;
         options.handlers.file = options.handlers.file || new NoAuthSession_1.NoAuthSession({
             httpFetch: options.handlers.http,
             fileHandler: new file_1.SolidRestFile()
