@@ -124,8 +124,18 @@ exports.NssAuthSession = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var NssAuthSession = /** @class */function () {
   function NssAuthSession() {}
+<<<<<<< HEAD
   NssAuthSession.prototype.login = function () {
     return __awaiter(this, arguments, void 0, function (options) {
+=======
+
+  NssAuthSession.prototype.login = function (options, appUrl) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+>>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
       var self;
       var _this = this;
       if (options === void 0) {
@@ -137,8 +147,15 @@ var NssAuthSession = /** @class */function () {
         options.password = options.password || process.env.SOLID_PASSWORD;
         options.debug = options.debug || process.env.SOLID_DEBUG ? true : false;
         self = this;
+<<<<<<< HEAD
         return [2 /*return*/, new Promise(function (resolve, reject) {
           _this._getAuthFetcher(options, function (session) {
+=======
+        return [2
+        /*return*/
+        , new Promise(function (resolve, reject) {
+          _this._getAuthFetcher(options, appUrl, function (session) {
+>>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
             self.session = session;
             resolve(session);
           });
@@ -146,7 +163,12 @@ var NssAuthSession = /** @class */function () {
       });
     });
   };
+<<<<<<< HEAD
   NssAuthSession.prototype._getAuthFetcher = function (options, callback) {
+=======
+
+  NssAuthSession.prototype._getAuthFetcher = function (options, appUrl, callback) {
+>>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
     return __awaiter(this, void 0, void 0, function () {
       var cookie, e_1, _a, session;
       var _this = this;
@@ -169,7 +191,14 @@ var NssAuthSession = /** @class */function () {
               return [2 /*return*/, callback(null)];
             }
             _a = this;
+<<<<<<< HEAD
             return [4 /*yield*/, (0, solid_auth_fetcher_1.getAuthFetcher)(options.idp, cookie, "https://solid-node-client")];
+=======
+            return [4
+            /*yield*/
+            , solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, appUrl)];
+
+>>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
           case 4:
             _a.authFetcher = _b.sent();
             return [4 /*yield*/, (0, solid_auth_fetcher_1.getSession)()];

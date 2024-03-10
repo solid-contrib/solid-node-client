@@ -175,7 +175,9 @@ var SolidNodeClient = /** @class */function () {
       httpFetch: options.handlers.http,
       fileHandler: new file_1.SolidRestFile()
     });
+    options.appUrl = options.appUrl || "https://solid-node-client";
     if (options.handlers.https) this.handlers.userHttps = options.handlers.https;
+    this.appUrl = options.appUrl;
     this.handlers = options.handlers;
     this.debug = false;
     return this;
@@ -219,8 +221,19 @@ var SolidNodeClient = /** @class */function () {
             } else {
               this.handlers.https = new EssAuthSession_1.EssAuthSession();
             }
+<<<<<<< HEAD
             if (!this.handlers[protocol]) return [3 /*break*/, 2];
             return [4 /*yield*/, this.handlers[protocol].login(credentials)];
+=======
+
+            if (!this.handlers[protocol]) return [3
+            /*break*/
+            , 2];
+            return [4
+            /*yield*/
+            , this.handlers[protocol].login(credentials, this.appUrl)];
+
+>>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
           case 1:
             _a = _b.sent();
             return [3 /*break*/, 3];

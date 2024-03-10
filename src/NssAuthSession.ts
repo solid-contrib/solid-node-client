@@ -11,21 +11,21 @@ export class NssAuthSession implements IAuthSession {
   session:INssSession
   authFetcher:any
 
-  async login(options:ILoginOptions = {}) {
+  async login(options:ILoginOptions = {}, appUrl:string) {
     options.idp      = options.idp || process.env.SOLID_IDP || "";
     options.username = options.username || process.env.SOLID_USERNAME;
     options.password = options.password || process.env.SOLID_PASSWORD;
     options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
     let self=this;
     return new Promise((resolve, reject) => {
-      this._getAuthFetcher( options, (session) => {
+      this._getAuthFetcher( options, appUrl, (session) => {
         self.session = session;
         resolve(session);
       });
     })
   }
 
-  async _getAuthFetcher(options:ILoginOptions,callback:Function){
+  async _getAuthFetcher(options:ILoginOptions, appUrl:string,callback:Function){
     let cookie;
     try {
       cookie = await getNodeSolidServerCookie(
@@ -41,7 +41,7 @@ export class NssAuthSession implements IAuthSession {
       return callback( null );
     }
     this.authFetcher = await getAuthFetcher(
-      options.idp, cookie, "https://solid-node-client"
+      options.idp, cookie, appUrl
     );
     let session = await getSession();
     this.authFetcher.onSession( async(s: INssSession) => {
