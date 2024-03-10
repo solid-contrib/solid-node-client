@@ -43,14 +43,8 @@ var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var NssAuthSession = /** @class */ (function () {
     function NssAuthSession() {
     }
-<<<<<<< HEAD
     NssAuthSession.prototype.login = function () {
-        return __awaiter(this, arguments, void 0, function (options) {
-=======
-    NssAuthSession.prototype.login = function (options, appUrl) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
->>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
+        return __awaiter(this, arguments, void 0, function (options, appUrl) {
             var self;
             var _this = this;
             if (options === void 0) { options = {}; }
@@ -92,11 +86,7 @@ var NssAuthSession = /** @class */ (function () {
                             return [2 /*return*/, callback(null)];
                         }
                         _a = this;
-<<<<<<< HEAD
-                        return [4 /*yield*/, (0, solid_auth_fetcher_1.getAuthFetcher)(options.idp, cookie, "https://solid-node-client")];
-=======
-                        return [4 /*yield*/, solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, appUrl)];
->>>>>>> ea40a8f7be7d5d1e6d6c9bf0e64e4f2f034637e8
+                        return [4 /*yield*/, (0, solid_auth_fetcher_1.getAuthFetcher)(options.idp, cookie, appUrl)];
                     case 4:
                         _a.authFetcher = _b.sent();
                         return [4 /*yield*/, (0, solid_auth_fetcher_1.getSession)()];
