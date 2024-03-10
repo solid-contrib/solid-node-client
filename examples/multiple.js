@@ -1,6 +1,6 @@
 const SolidNodeClient = require("../").SolidNodeClient;
 import {credentials} from '/home/jeff/.solid-identities.js';
-let loginProcile = credentials.solidCommunity
+let loginProfile = credentials.solidCommunity
 
 let url = `https://jeff-zucker.solidcommunity.net/public/hidden.html`
 

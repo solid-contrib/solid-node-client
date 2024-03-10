@@ -16,7 +16,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -37,17 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.NssAuthSession = void 0;
 var solid_auth_fetcher_1 = require("solid-auth-fetcher");
 var NssAuthSession = /** @class */ (function () {
     function NssAuthSession() {
     }
-    NssAuthSession.prototype.login = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
+    NssAuthSession.prototype.login = function () {
+        return __awaiter(this, arguments, void 0, function (options) {
             var self;
             var _this = this;
+            if (options === void 0) { options = {}; }
             return __generator(this, function (_a) {
                 options.idp = options.idp || process.env.SOLID_IDP || "";
                 options.username = options.username || process.env.SOLID_USERNAME;
@@ -71,7 +71,7 @@ var NssAuthSession = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, solid_auth_fetcher_1.getNodeSolidServerCookie(options.idp, options.username, options.password)];
+                        return [4 /*yield*/, (0, solid_auth_fetcher_1.getNodeSolidServerCookie)(options.idp, options.username, options.password)];
                     case 1:
                         cookie = _b.sent();
                         return [3 /*break*/, 3];
@@ -86,10 +86,10 @@ var NssAuthSession = /** @class */ (function () {
                             return [2 /*return*/, callback(null)];
                         }
                         _a = this;
-                        return [4 /*yield*/, solid_auth_fetcher_1.getAuthFetcher(options.idp, cookie, "https://solid-node-client")];
+                        return [4 /*yield*/, (0, solid_auth_fetcher_1.getAuthFetcher)(options.idp, cookie, "https://solid-node-client")];
                     case 4:
                         _a.authFetcher = _b.sent();
-                        return [4 /*yield*/, solid_auth_fetcher_1.getSession()];
+                        return [4 /*yield*/, (0, solid_auth_fetcher_1.getSession)()];
                     case 5:
                         session = _b.sent();
                         this.authFetcher.onSession(function (s) { return __awaiter(_this, void 0, void 0, function () {

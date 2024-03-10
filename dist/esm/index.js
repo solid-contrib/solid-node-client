@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -33,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -57,7 +61,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.SolidNodeClient = void 0;
 var NoAuthSession_1 = require("./NoAuthSession");
 //
@@ -72,7 +76,7 @@ var SolidNodeClient = /** @class */ (function () {
     function SolidNodeClient(options) {
         if (options === void 0) { options = {}; }
         options.handlers = options.handlers || {};
-        options.handlers.http = options.handlers.http || node_fetch_1["default"];
+        options.handlers.http = options.handlers.http || node_fetch_1.default;
         options.handlers.file = options.handlers.file || new NoAuthSession_1.NoAuthSession({
             httpFetch: options.handlers.http,
             fileHandler: new file_1.SolidRestFile()
@@ -99,11 +103,11 @@ var SolidNodeClient = /** @class */ (function () {
             });
         });
     };
-    SolidNodeClient.prototype.login = function (credentials, protocol) {
-        if (credentials === void 0) { credentials = {}; }
-        if (protocol === void 0) { protocol = "https"; }
-        return __awaiter(this, void 0, void 0, function () {
+    SolidNodeClient.prototype.login = function () {
+        return __awaiter(this, arguments, void 0, function (credentials, protocol) {
             var session, _a;
+            if (credentials === void 0) { credentials = {}; }
+            if (protocol === void 0) { protocol = "https"; }
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -137,20 +141,20 @@ var SolidNodeClient = /** @class */ (function () {
             });
         });
     };
-    SolidNodeClient.prototype.getSession = function (protocol) {
-        if (protocol === void 0) { protocol = "https"; }
-        return __awaiter(this, void 0, void 0, function () {
+    SolidNodeClient.prototype.getSession = function () {
+        return __awaiter(this, arguments, void 0, function (protocol) {
             var session;
+            if (protocol === void 0) { protocol = "https"; }
             return __generator(this, function (_a) {
                 session = this.handlers[protocol] && this.handlers[protocol].session ? this.handlers[protocol].session : this.handlers.file.session;
                 return [2 /*return*/, session];
             });
         });
     };
-    SolidNodeClient.prototype.logout = function (protocol) {
-        if (protocol === void 0) { protocol = "https"; }
-        return __awaiter(this, void 0, void 0, function () {
+    SolidNodeClient.prototype.logout = function () {
+        return __awaiter(this, arguments, void 0, function (protocol) {
             var session;
+            if (protocol === void 0) { protocol = "https"; }
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getSession(protocol)];

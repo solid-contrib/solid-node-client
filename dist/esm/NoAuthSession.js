@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.NoAuthSession = void 0;
 var NoAuthSession = /** @class */ (function () {
     function NoAuthSession(options) {
@@ -12,7 +12,7 @@ var NoAuthSession = /** @class */ (function () {
             isLoggedIn: false,
             info: { isLoggedIn: false },
             fetch: this._fetch.bind(this),
-            logout: function () { }
+            logout: function () { },
         };
     }
     NoAuthSession.prototype._fetch = function (url, options) {

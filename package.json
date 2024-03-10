@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "2.1.5",
+  "version": "2.1.11",
   "description": "a client for nodejs access to Solid",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -20,16 +20,18 @@
   "author": "Jeff Zucker",
   "license": "MIT",
   "dependencies": {
-    "@inrupt/solid-client-authn-node": "^1.9.1",
-    "@solid-rest/file": "^2.1.12",
-    "solid-auth-fetcher": "^1.5.3"
+    "@inrupt/solid-client-authn-node": "^2.0.0",
+    "@solid-rest/file": "^2.1.18",
+    "@types/fs-extra": "^11.0.4",
+    "solid-auth-fetcher": "^1.5.4",
+    "solid-file-client": "^2.1.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.16",
-    "@babel/cli": "^7.13.16",
-    "@babel/plugin-transform-modules-commonjs": "^7.13.8",
-    "@inrupt/solid-client": "^1.9.0",
-    "rdflib": "^2.2.6",
-    "typescript": "4.2.4"
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.24.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "@inrupt/solid-client": "^2.0.0",
+    "rdflib": "^2.2.33",
+    "typescript": "5.4.2"
   }
 }
