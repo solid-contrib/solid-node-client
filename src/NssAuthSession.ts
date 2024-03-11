@@ -18,10 +18,12 @@ export class NssAuthSession implements IAuthSession {
     options.debug    = options.debug || (process.env.SOLID_DEBUG) ?true :false;
     let self=this;
     return new Promise((resolve, reject) => {
-      this._getAuthFetcher( options, appUrl, (session) => {
-        self.session = session;
-        resolve(session);
-      });
+      try {
+       this._getAuthFetcher( options, appUrl, (session) => {
+          self.session = session;
+          resolve(session);
+        });
+      }catch(e){console.log(e); reject(e)};
     })
   }
 

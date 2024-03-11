@@ -55,10 +55,17 @@ var NssAuthSession = /** @class */ (function () {
                 options.debug = options.debug || (process.env.SOLID_DEBUG) ? true : false;
                 self = this;
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _this._getAuthFetcher(options, appUrl, function (session) {
-                            self.session = session;
-                            resolve(session);
-                        });
+                        try {
+                            _this._getAuthFetcher(options, appUrl, function (session) {
+                                self.session = session;
+                                resolve(session);
+                            });
+                        }
+                        catch (e) {
+                            console.log(e);
+                            reject(e);
+                        }
+                        ;
                     })];
             });
         });
