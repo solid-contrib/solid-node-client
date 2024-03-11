@@ -6,7 +6,7 @@ import {NoAuthSession} from './NoAuthSession'
 import {NssAuthSession} from './NssAuthSession'
 import {EssAuthSession} from './EssAuthSession'
 import {SolidRestFile} from '@solid-rest/file';
-//import fetch from "node-fetch";
+import fetch from "cross-fetch";
 import * as UrlObj from 'url';
 
 export class SolidNodeClient {

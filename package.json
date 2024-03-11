@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "description": "a client for nodejs access to Solid",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -23,6 +23,7 @@
     "@inrupt/solid-client-authn-node": "^2.0.0",
     "@solid-rest/file": "^2.1.18",
     "@types/fs-extra": "^11.0.4",
+    "cross-fetch": "^4.0.0",
     "solid-auth-fetcher": "^1.6.0",
     "solid-file-client": "^2.1.3"
   },
