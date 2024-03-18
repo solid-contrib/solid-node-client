@@ -4,7 +4,6 @@ import {NoAuthSession} from './NoAuthSession'
 // TBD rename NssAuth -> UserAuth; EssAuth -> TokenAuth
 //
 import {NssAuthSession} from './NssAuthSession'
-import {EssAuthSession} from './EssAuthSession'
 import {SolidRestFile} from '@solid-rest/file';
 import fetch from "cross-fetch";
 import * as UrlObj from 'url';
@@ -50,6 +49,7 @@ export class SolidNodeClient {
       this.handlers.https = new NssAuthSession();
     }
     else {
+      const {EssAuthSession} = await import('./EssAuthSession');
       this.handlers.https = new EssAuthSession();
     }
     let session = this.handlers[protocol] ?await this.handlers[protocol].login(credentials, this.appUrl) :this.handlers.file.session;

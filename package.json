@@ -1,6 +1,6 @@
 {
   "name": "solid-node-client",
-  "version": "2.1.18",
+  "version": "2.1.19",
   "description": "a client for nodejs access to Solid",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

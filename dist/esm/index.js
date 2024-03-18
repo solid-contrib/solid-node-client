@@ -68,7 +68,6 @@ var NoAuthSession_1 = require("./NoAuthSession");
 // TBD rename NssAuth -> UserAuth; EssAuth -> TokenAuth
 //
 var NssAuthSession_1 = require("./NssAuthSession");
-var EssAuthSession_1 = require("./EssAuthSession");
 var file_1 = require("@solid-rest/file");
 var cross_fetch_1 = __importDefault(require("cross-fetch"));
 var UrlObj = __importStar(require("url"));
@@ -107,7 +106,7 @@ var SolidNodeClient = /** @class */ (function () {
     };
     SolidNodeClient.prototype.login = function () {
         return __awaiter(this, arguments, void 0, function (credentials, protocol) {
-            var session, _a;
+            var EssAuthSession, session, _a;
             if (credentials === void 0) { credentials = {}; }
             if (protocol === void 0) { protocol = "https"; }
             return __generator(this, function (_b) {
@@ -118,24 +117,28 @@ var SolidNodeClient = /** @class */ (function () {
                             credentials.username = process.env.SOLID_USERNAME;
                             credentials.password = process.env.SOLID_PASSWORD;
                         }
-                        if (this.handlers.userHttps) {
-                            this.handlers.https = this.handlers.userHttps;
-                        }
-                        else if (credentials.username && credentials.password && credentials.idp) {
-                            this.handlers.https = new NssAuthSession_1.NssAuthSession();
-                        }
-                        else {
-                            this.handlers.https = new EssAuthSession_1.EssAuthSession();
-                        }
-                        if (!this.handlers[protocol]) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.handlers[protocol].login(credentials, this.appUrl)];
+                        if (!this.handlers.userHttps) return [3 /*break*/, 1];
+                        this.handlers.https = this.handlers.userHttps;
+                        return [3 /*break*/, 4];
                     case 1:
-                        _a = _b.sent();
-                        return [3 /*break*/, 3];
-                    case 2:
-                        _a = this.handlers.file.session;
-                        _b.label = 3;
+                        if (!(credentials.username && credentials.password && credentials.idp)) return [3 /*break*/, 2];
+                        this.handlers.https = new NssAuthSession_1.NssAuthSession();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('./EssAuthSession')); })];
                     case 3:
+                        EssAuthSession = (_b.sent()).EssAuthSession;
+                        this.handlers.https = new EssAuthSession();
+                        _b.label = 4;
+                    case 4:
+                        if (!this.handlers[protocol]) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.handlers[protocol].login(credentials, this.appUrl)];
+                    case 5:
+                        _a = _b.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _a = this.handlers.file.session;
+                        _b.label = 7;
+                    case 7:
                         session = _a;
                         session || (session = this.handlers.file.session);
                         return [2 /*return*/, session];
