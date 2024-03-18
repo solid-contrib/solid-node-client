@@ -7,7 +7,7 @@ export declare class NoAuthSession implements IAuthSession {
     httpFetch: any;
     createServerlessPod: any;
     constructor(options?: INoAuthOptions);
-    _fetch(url: string, options: any): Promise<any>;
+    _fetch(url: string, options: any): any;
 }
 interface INoAuthOptions {
     fileHandler?: any;
