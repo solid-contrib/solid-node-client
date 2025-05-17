@@ -1,37 +1,25 @@
 {
   "name": "solid-node-client",
-  "version": "2.1.20",
-  "description": "a client for nodejs access to Solid",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "engines": {
-    "node": ">=16"
-  },
-  "engine-strict": true,
+  "version": "3.0.0",
+  "description": "Solid access to remote pods & local files from nodejs",
+  "main": "./src/solid-node-client.js",
+  "type": "module",
   "scripts": {
-    "test": "node tests/all",
-    "getToken": "node node_modules/@inrupt/generate-oidc-token/dist/",
-    "build": "npm run build:clean && npm run build:esm && npm run build:cjs",
-    "build:clean": "rm -rf dist && mkdir dist && mkdir dist/cjs && mkdir dist/esm",
-    "build:esm": "tsc --esModuleInterop --declaration --outDir dist/esm src/*.ts",
-    "build:cjs": "babel --plugins @babel/plugin-transform-modules-commonjs dist/esm -d dist/cjs"
+    "test": "node tests/snc-crud.js"
   },
-  "keywords": [],
+  "keywords": [
+    "Solid",
+    "semantic-web",
+    "linked-data",
+    "local-access"
+  ],
   "author": "Jeff Zucker",
   "license": "MIT",
   "dependencies": {
-    "@solid-rest/file": "^2.1.20",
-    "@types/fs-extra": "^11.0.4",
-    "cross-fetch": "^4.0.0",
-    "solid-auth-fetcher": "^1.7.0a"
-  },
-  "devDependencies": {
-    "@inrupt/solid-client-authn-node": "^2.0.0",
-    "@babel/cli": "^7.23.9",
-    "@babel/core": "^7.24.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
-    "@inrupt/solid-client": "^2.0.0",
-    "rdflib": "^2.2.33",
-    "typescript": "5.4.2"
+    "@solid-rest/file": "^2.1.21",
+    "css-authn": "^0.2.1",
+    "rdflib": "^2.2.37",
+    "readline-sync": "^1.4.10",
+    "solid-file-client": "^2.1.11"
   }
 }
